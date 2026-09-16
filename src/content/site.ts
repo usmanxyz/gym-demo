@@ -67,8 +67,10 @@ export type ClassSlot = {
   spotsLeft: number;
 };
 
+export type PlanSlug = "monthly" | "quarterly" | "annual";
+
 export type Plan = {
-  slug: string;
+  slug: PlanSlug;
   name: string;
   pricePKR: number;
   period: string;
@@ -76,6 +78,29 @@ export type Plan = {
   includes: string[];
   featured: boolean;
 };
+
+/**
+ * One line of the comparison table. `true` is a tick and `false` a dash; a
+ * string is the detail that makes the row worth reading, because "Every 6
+ * weeks" says more than a tick ever could.
+ *
+ * Keyed by PlanSlug rather than by string, so a row can never quietly
+ * describe a membership that no longer exists.
+ */
+export type CompareRow = { label: string; plans: Record<PlanSlug, boolean | string> };
+
+/** Something you buy on top of a membership, never instead of one. */
+export type AddOn = {
+  slug: string;
+  name: string;
+  pricePKR: number;
+  period: string;
+  blurb: string;
+};
+
+export type PolicyGroup = { heading: string; points: string[] };
+
+export type PaymentMethod = { method: string; detail: string };
 
 export type Trainer = {
   slug: string;
@@ -428,6 +453,47 @@ export const site = {
       "Assalam o alaikum! {class} on {day} at {time} shows as full — could you put me on the waitlist?",
   },
 
+  /**
+   * The copy around the fees. The figures themselves live in `membership`
+   * below — this is only what the page says about them.
+   */
+  plansSection: {
+    heading: "Three ways to pay for the same gym",
+    subhead:
+      "Every membership opens the same floor, the same classes and the same coaches. A longer plan buys a lower monthly price and a little more room to stop — nothing else is held back.",
+    // {plan} is the membership named on the card you tapped.
+    waTemplate:
+      "Assalam o alaikum! I'd like to join on the {plan} membership. What do I need to bring?",
+    planCta: "Ask about this plan",
+    featuredLabel: "Most members choose this",
+    compare: {
+      heading: "What each membership includes",
+      subhead:
+        "The same table the front desk reads from. Anything not on it is something we don't charge for.",
+      rowHeading: "What you get",
+      yes: "Included",
+      no: "Not included",
+    },
+    addOns: {
+      heading: "Add-ons",
+      subhead:
+        "Bought on top of a membership, never instead of one. Both stop at the end of any month.",
+    },
+    policy: {
+      heading: "Freezing, stopping and refunds",
+      subhead:
+        "Written down because nobody should have to ask. The same rules apply whichever plan you are on.",
+    },
+    payment: {
+      heading: "How to pay",
+      subhead:
+        "Paid at the front desk or sent before you arrive. We hold no card details and nothing renews on its own.",
+    },
+    faq: {
+      heading: "Questions about the fees",
+    },
+  },
+
   membership: {
     admissionFeePKR: 3000,
     admissionNote:
@@ -476,12 +542,130 @@ export const site = {
         featured: false,
       },
     ] as Plan[],
-    personalTraining: {
-      pricePKR: 18000,
-      period: "per month",
-      blurb:
-        "Twelve one-to-one sessions a month with the same coach, on top of any membership. Bookable in the morning or after 8 pm.",
-    },
+    /**
+     * The comparison, line by line. Every row is checked against the plans
+     * above: a row may not promise something a membership's `includes` list
+     * does not.
+     */
+    compare: [
+      {
+        label: "Gym floor, cardio and every class",
+        plans: { monthly: true, quarterly: true, annual: true },
+      },
+      {
+        label: "Locker, towel and showers",
+        plans: { monthly: true, quarterly: true, annual: true },
+      },
+      {
+        label: "Programme written by your coach",
+        plans: { monthly: true, quarterly: true, annual: true },
+      },
+      {
+        label: "One InBody scan a month",
+        plans: { monthly: true, quarterly: true, annual: true },
+      },
+      {
+        label: "Programme review with Bilal",
+        plans: { monthly: false, quarterly: "Every 6 weeks", annual: "Every 6 weeks" },
+      },
+      {
+        label: "Guest passes for a friend",
+        plans: { monthly: false, quarterly: "2", annual: "2" },
+      },
+      {
+        label: "Freeze your membership",
+        plans: { monthly: false, quarterly: "Up to 14 days", annual: "Up to 30 days" },
+      },
+      {
+        label: "Kit bag and two Iron Fitness shirts",
+        plans: { monthly: false, quarterly: false, annual: true },
+      },
+      {
+        // Stated as a word rather than a figure so the fee lives in exactly
+        // one place, `admissionFeePKR`, and this row can never contradict it.
+        label: "One-time admission fee",
+        plans: { monthly: "Payable", quarterly: "Payable", annual: "Waived" },
+      },
+    ] as CompareRow[],
+
+    addOns: [
+      {
+        slug: "personal-training",
+        name: "Personal training",
+        pricePKR: 18000,
+        period: "per month",
+        blurb:
+          "Twelve one-to-one sessions a month with the same coach, on top of any membership. Bookable in the morning or after 8 pm. Single sessions are Rs 2,000.",
+      },
+      {
+        slug: "diet-plan",
+        name: "Diet plan",
+        pricePKR: 4500,
+        period: "per month",
+        blurb:
+          "A month of meals written around what you already eat, in Urdu or English, reviewed with Ayesha every four weeks.",
+      },
+    ] as AddOn[],
+
+    policy: [
+      {
+        heading: "Freezing",
+        points: [
+          "3-month members can freeze once for up to 14 days. 12-month members get up to 30 days across the year, in as many goes as they like.",
+          "Tell us before the freeze starts, on WhatsApp or at the front desk. We can't backdate one.",
+          "Frozen days are added to the end of your membership rather than refunded.",
+        ],
+      },
+      {
+        heading: "Stopping and refunds",
+        points: [
+          "Monthly memberships are rolling. Stop whenever you like — there is no notice period and nothing to cancel.",
+          "3-month and 12-month memberships are refundable in the first 7 days, less the days you trained and the admission fee.",
+          "After that we don't refund the remainder, but you can transfer what is left of it to someone else, once.",
+        ],
+      },
+    ] as PolicyGroup[],
+
+    payment: [
+      {
+        method: "Cash",
+        detail: "At the front desk, any time the floor is open. We message you a receipt the same day.",
+      },
+      {
+        method: "Bank transfer",
+        detail:
+          "Ask for the Iron Fitness account details on WhatsApp and send the screenshot back. Your card is ready the next morning.",
+      },
+      {
+        method: "JazzCash or Easypaisa",
+        detail:
+          "To the same number you message us on. It lands in a minute and your access card works straight away.",
+      },
+    ] as PaymentMethod[],
+
+    /**
+     * Fee questions that the homepage FAQ does not already answer. The
+     * admission fee and the personal-training price are deliberately absent:
+     * both are in `site.faqs`, and saying them twice invites them to drift.
+     */
+    feesFaqs: [
+      {
+        q: "Can I move to a longer plan partway through?",
+        a: "Yes. What you have already paid comes off the longer plan on the day you switch, and you keep your original join date. It doesn't work the other way round mid-term.",
+      },
+      {
+        q: "Does my membership renew automatically?",
+        a: "No. Nothing renews on its own and we hold no card details — your access card simply stops working on the last day, and you pay again whenever you are ready.",
+      },
+      {
+        q: "Will the price go up while I'm a member?",
+        a: "Not on a plan you have already paid for. If prices change you'd pay the new one at your next renewal, and we tell everyone a month before.",
+      },
+      {
+        q: "Is there a discount for students, or for two people joining together?",
+        a: "Students with a valid university card get Rs 1,000 off the monthly plan. Two people joining together on any plan pay one admission fee between them.",
+      },
+    ] as Faq[],
   },
 
   trainers: [
