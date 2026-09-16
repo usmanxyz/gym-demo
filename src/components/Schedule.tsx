@@ -227,22 +227,29 @@ function DayTabs({
             className={`flex min-h-14 flex-col items-center justify-center gap-0.5 rounded-ui border text-[0.9375rem] font-semibold transition-colors ${
               selected
                 ? "border-bone bg-bone text-ink"
-                : "border-iron-line bg-iron text-smoke hover:border-bone/40 hover:text-bone"
+                : "border-bone/25 bg-iron text-bone/80 hover:border-bone/50 hover:text-bone"
             }`}
           >
             <span className="md:hidden">{DAY_LABELS[day].short}</span>
             <span className="hidden md:inline">{DAY_LABELS[day].long}</span>
-            {/* Only ever rendered after mount, once the device has told us
-                what day it is. */}
-            {day === today ? (
-              <span
-                className={`text-[0.625rem] font-medium uppercase tracking-wide ${
-                  selected ? "text-ink/60" : "text-smoke"
-                }`}
-              >
-                Today
-              </span>
-            ) : null}
+            {/* The badge line is reserved on all seven tabs, not just today's.
+                Rendering it only on today made that one tab two lines tall and
+                pushed its day name 9px off the row the other six sit on — and
+                since `today` is null until the client reports in, it also moved
+                the whole row the moment it mounted. An always-present line
+                costs nothing and holds the baseline steady. */}
+            <span
+              aria-hidden={day !== today}
+              className={`text-[0.625rem] font-medium uppercase tracking-wide ${
+                day !== today
+                  ? "invisible"
+                  : selected
+                    ? "text-ink/75"
+                    : "text-bone/70"
+              }`}
+            >
+              Today
+            </span>
           </button>
         );
       })}
@@ -274,7 +281,7 @@ function ChipRow<T extends string>({
             className={`min-h-11 rounded-full border px-4 text-sm font-medium transition-colors ${
               on
                 ? "border-bone bg-bone text-ink"
-                : "border-iron-line bg-iron text-smoke hover:border-bone/40 hover:text-bone"
+                : "border-bone/25 bg-iron text-bone/80 hover:border-bone/50 hover:text-bone"
             }`}
           >
             {option.label}
@@ -311,7 +318,7 @@ function ClassCard({ slot }: { slot: ClassSlot }) {
         target="_blank"
         rel="noopener noreferrer"
         aria-label={`${full ? "Ask about the waitlist for" : "Book"} ${slot.name} on ${dayLabel} at ${formatTime(slot.start)}, ${slot.coach} coaching`}
-        className="block rounded-ui border border-iron-line bg-iron p-4 transition-colors hover:border-bone/40"
+        className="group block rounded-ui border border-iron-line bg-iron p-4 transition-colors hover:border-bone/40"
       >
         <div className="flex items-start gap-3 md:gap-4">
           <div className="w-[4.75rem] shrink-0">
@@ -326,10 +333,19 @@ function ClassCard({ slot }: { slot: ClassSlot }) {
             <p className="mt-0.5 text-sm text-smoke">with {slot.coach}</p>
           </div>
 
-          {/* The affordance, not a second target: the card itself is the link. */}
+          {/* The affordance, not a second target: the card itself is the link.
+              Filled solid it was indistinguishable from a real WhatsApp button
+              and invited a tap at its own edges, so it is tinted rather than
+              filled. A full class goes neutral — sending the same go-ahead
+              green for "join the waitlist" as for "book this" was a promise
+              the card could not keep. */}
           <span
             aria-hidden
-            className="grid size-11 shrink-0 place-items-center rounded-ui bg-whatsapp text-ink"
+            className={`grid size-11 shrink-0 place-items-center rounded-ui transition-colors ${
+              full
+                ? "bg-bone/10 text-smoke"
+                : "bg-whatsapp/15 text-whatsapp group-hover:bg-whatsapp/25"
+            }`}
           >
             <WhatsAppIcon className="size-5" />
           </span>
@@ -362,7 +378,7 @@ function ClassCard({ slot }: { slot: ClassSlot }) {
           </span>
 
           {full ? (
-            <span className="text-smoke">Full</span>
+            <span className="font-medium text-smoke">Full — join the waitlist</span>
           ) : (
             <span className={slot.spotsLeft <= 3 ? "text-amber" : "text-smoke"}>
               <span className="numeral">{slot.spotsLeft}</span> of{" "}

@@ -72,7 +72,7 @@ export function Navbar() {
 
           <a
             href="#book"
-            className="hidden rounded-ui bg-wrap px-5 py-3 text-[0.95rem] font-semibold text-bone transition-colors hover:bg-wrap-hot sm:inline-block"
+            className="hidden rounded-ui bg-wrap px-5 py-3 text-[0.95rem] font-semibold text-white transition-colors hover:bg-wrap-deep sm:inline-block"
           >
             {site.hero.primaryCtaShort}
           </a>
@@ -115,7 +115,7 @@ export function Navbar() {
             <a
               href="#book"
               onClick={() => setOpen(false)}
-              className="rounded-ui bg-wrap px-5 py-4 text-center text-base font-semibold text-bone transition-colors hover:bg-wrap-hot"
+              className="rounded-ui bg-wrap px-5 py-4 text-center text-base font-semibold text-white transition-colors hover:bg-wrap-deep"
             >
               {site.hero.primaryCtaShort}
             </a>

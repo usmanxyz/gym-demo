@@ -6,7 +6,9 @@ import { WhatsAppIcon } from "./WhatsAppIcon";
 export function Footer() {
   return (
     <footer className="border-t border-iron-line bg-iron">
-      <div className="mx-auto max-w-7xl px-5 py-14 md:px-8 md:py-20">
+      {/* Extra bottom padding buys clearance for the fixed WhatsApp bubble,
+          which otherwise parks on top of the last line of the disclaimer. */}
+      <div className="mx-auto max-w-7xl px-5 pb-28 pt-14 md:px-8 md:pb-24 md:pt-20">
         <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1.2fr]">
           <div>
             <p className="display text-2xl text-bone">{site.name}</p>
@@ -59,7 +61,9 @@ export function Footer() {
 
         <div className="mt-14 border-t border-iron-line pt-8">
           <p className="text-sm font-medium text-bone">{site.footer.credit}</p>
-          <p className="mt-2 max-w-2xl text-sm text-smoke">{site.footer.disclaimer}</p>
+          <p className="mt-2 max-w-2xl pr-16 text-sm text-smoke sm:pr-0">
+            {site.footer.disclaimer}
+          </p>
         </div>
       </div>
     </footer>

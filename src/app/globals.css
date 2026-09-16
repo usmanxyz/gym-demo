@@ -19,7 +19,10 @@
   --color-smoke: #8a8b96; /* secondary text */
   --color-amber: #f2a33c; /* information only */
   --color-wrap: #d8342a; /* action only */
-  --color-wrap-hot: #ef4436; /* action, hover */
+  --color-wrap-hot: #ef4436; /* action: focus rings and error text on dark */
+  /* Buttons hover *darker*, not brighter. Going lighter pushed the label
+     below 4.5:1; going darker keeps white text climbing, not falling. */
+  --color-wrap-deep: #b02a22;
 
   /* The one colour that comes from outside this palette. WhatsApp green is
      doing a job no house colour can do: it is recognised before it is read.
@@ -87,6 +90,10 @@
     font-variation-settings: "wdth" 118;
     text-transform: uppercase;
     letter-spacing: -0.015em;
+    /* The negative tracking is what makes the caps block up, but it eats the
+       word gaps too — "BOOK YOUR" was closing to "BOOKYOUR" where the K met
+       the Y. Buy the gaps back without loosening the letters. */
+    word-spacing: 0.12em;
     line-height: 0.92;
   }
 

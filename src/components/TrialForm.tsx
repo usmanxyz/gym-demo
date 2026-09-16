@@ -107,11 +107,14 @@ export function TrialForm() {
 
   return (
     <section id="book" className="border-t border-iron-line py-20 md:py-28">
-      <div className="mx-auto max-w-3xl px-5 md:px-8">
+      {/* Same max-w-7xl measure as the hero and the board. On max-w-3xl this
+          section started 256px to the right of every other left edge on the
+          page — not aligned with them and not centred on the page either. */}
+      <div className="mx-auto max-w-7xl px-5 md:px-8">
         <h2 className="display text-3xl text-bone md:text-5xl">{form.heading}</h2>
         <p className="mt-4 max-w-xl text-smoke md:text-lg">{form.subhead}</p>
 
-        <div className="mt-10 rounded-ui border border-iron-line bg-iron p-5 md:mt-12 md:p-8">
+        <div className="mt-10 max-w-3xl rounded-ui border border-iron-line bg-iron p-5 md:mt-12 md:p-8">
           {sent ? (
             <Sent message={sent} onReset={reset} />
           ) : (
@@ -168,7 +171,7 @@ export function TrialForm() {
                   aria-describedby={
                     errors.phone ? errorId("phone") : fieldId("phone-hint")
                   }
-                  className={`${control(!!errors.phone)} numeral tracking-wide`}
+                  className={`${control(!!errors.phone)} tabular-nums tracking-wide`}
                 />
               </Field>
 
@@ -302,7 +305,7 @@ export function TrialForm() {
                     can never sit on top of the way to book. */}
                 <button
                   type="submit"
-                  className="flex min-h-14 w-full items-center justify-center gap-2.5 rounded-ui bg-wrap px-6 text-base font-semibold text-bone transition-colors hover:bg-wrap-hot"
+                  className="flex min-h-14 w-full items-center justify-center gap-2.5 rounded-ui bg-wrap px-6 text-base font-semibold text-white transition-colors hover:bg-wrap-deep"
                 >
                   <WhatsAppIcon className="size-5 shrink-0" aria-hidden />
                   {form.submit}
@@ -502,8 +505,8 @@ function Choice({
         className={`flex min-h-12 cursor-pointer items-center justify-between gap-3 rounded-ui border px-4 text-[0.95rem] transition-colors peer-focus-visible:outline-2 peer-focus-visible:outline-offset-[3px] peer-focus-visible:outline-wrap-hot ${
           checked
             ? "border-bone bg-bone font-semibold text-ink"
-            : `bg-ink font-medium text-smoke hover:border-bone/40 hover:text-bone ${
-                invalid ? "border-wrap-hot/60" : "border-iron-line"
+            : `bg-ink/40 font-medium text-bone/85 hover:border-bone/50 hover:bg-ink/70 ${
+                invalid ? "border-wrap-hot/60" : "border-bone/25"
               }`
         }`}
       >

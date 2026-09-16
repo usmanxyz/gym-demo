@@ -14,6 +14,11 @@ import { WhatsAppIcon } from "./WhatsAppIcon";
  *
  * Pulled up under the fixed navbar (which is transparent until you scroll), so
  * the photograph starts at the top of the viewport instead of below the bar.
+ *
+ * Only one filled button here. WhatsApp green is the brightest thing on the
+ * palette, so a filled green secondary simply out-shouted the red primary it
+ * was meant to support; it is an outline now, with the green kept on the glyph
+ * where the recognition actually lives.
  */
 export function Hero() {
   const { headline, subhead, primaryCta, secondaryCta, stats } = site.hero;
@@ -69,7 +74,7 @@ export function Hero() {
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center md:mt-10">
           <a
             href="#book"
-            className="rounded-ui bg-wrap px-7 py-4 text-center text-base font-semibold text-bone transition-colors hover:bg-wrap-hot"
+            className="rounded-ui bg-wrap px-7 py-4 text-center text-base font-semibold text-white transition-colors hover:bg-wrap-deep"
           >
             {primaryCta}
           </a>
@@ -77,15 +82,15 @@ export function Hero() {
             href={waLink()}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2.5 rounded-ui bg-whatsapp px-7 py-4 text-base font-semibold text-ink transition-colors hover:bg-whatsapp-hot"
+            className="flex items-center justify-center gap-2.5 rounded-ui border border-whatsapp/55 px-7 py-4 text-base font-semibold text-bone transition-colors hover:border-whatsapp hover:bg-whatsapp/10"
           >
-            <WhatsAppIcon className="size-5 shrink-0" />
+            <WhatsAppIcon className="size-5 shrink-0 text-whatsapp" />
             {secondaryCta}
           </a>
         </div>
 
         {/* Real figures, so they wear the information colour. */}
-        <dl className="mt-12 grid max-w-2xl grid-cols-3 gap-3 border-t border-bone/15 pt-7 md:mt-14 md:gap-8">
+        <dl className="mt-12 grid max-w-xl grid-cols-3 gap-3 border-t border-bone/15 pt-7 md:mt-14 md:gap-8">
           {stats.map((stat) => (
             <div key={stat.label}>
               <dt className="sr-only">{stat.label}</dt>
