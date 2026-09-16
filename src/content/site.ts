@@ -540,14 +540,76 @@ export const site = {
   ] as Faq[],
 
   trialForm: {
-    goals: [
-      "Lose weight",
-      "Build strength",
-      "Get fit for a sport",
-      "Rehab or posture",
-      "Just getting started",
-    ],
-    days: ["Today", "Tomorrow", "This weekend", "Sometime next week"],
+    heading: "Book your free trial",
+    subhead:
+      "Four questions, no card details. Sending opens WhatsApp with your booking written out — nothing is stored on this site.",
+
+    fields: {
+      name: { label: "Your name", placeholder: "e.g. Ayesha Khan" },
+      phone: {
+        label: "Mobile number",
+        placeholder: "0322 400 7617",
+        hint: "A Pakistani mobile, so we can confirm your slot on WhatsApp.",
+      },
+      programme: { label: "What you'd like to try", placeholder: "Pick a programme" },
+      floor: { label: "Which floor" },
+      batch: { label: "Preferred batch" },
+      plan: {
+        label: "Plan you're considering",
+        optional: "Optional",
+        placeholder: "Not sure yet",
+        hint: "No commitment either way — the trial session is free.",
+      },
+    },
+
+    /**
+     * Batches are listed per floor because the two floors don't run at the
+     * same times: the gents' floor is open morning and evening, while the
+     * whole floor is women only right through the afternoon. Offering a
+     * morning ladies' batch would be booking someone into a closed gym.
+     */
+    batches: {
+      ladies: [
+        { key: "ladies-early", label: "Early afternoon", window: "1 – 3 pm" },
+        { key: "ladies-late", label: "Late afternoon", window: "3 – 5 pm" },
+      ],
+      gents: [
+        { key: "gents-morning", label: "Morning", window: "5 – 11 am" },
+        { key: "gents-evening", label: "Evening", window: "6 – 11 pm" },
+      ],
+    },
+
+    errors: {
+      name: "Please tell us your name.",
+      phone: "Enter a Pakistani mobile number, like 0322 400 7617.",
+      programme: "Pick the programme you'd like to try.",
+      floor: "Tell us which floor you'd train on.",
+      batch: "Pick the batch that suits you.",
+    },
+
+    submit: "Send booking on WhatsApp",
+    submitNote: "Opens WhatsApp in a new tab. No payment, no sign-up.",
+
+    success: {
+      heading: "Your booking is in WhatsApp",
+      body: "Press send in the WhatsApp tab and a coach will confirm your slot within the hour, during opening times.",
+      sentLabel: "What we filled in for you",
+      retry: "WhatsApp didn't open? Open it again",
+      reset: "Book another session",
+    },
+
+    /** How the composed WhatsApp message opens, labels itself, and closes. */
+    message: {
+      intro: "Assalam o alaikum! I'd like to book my free trial at Iron Fitness.",
+      outro: "Could you confirm a slot? Sent from the website.",
+      labels: {
+        name: "Name",
+        phone: "Phone",
+        programme: "Programme",
+        batch: "Preferred batch",
+        plan: "Plan I'm considering",
+      },
+    },
   },
 
   footer: {
