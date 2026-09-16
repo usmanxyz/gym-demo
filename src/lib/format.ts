@@ -1,3 +1,5 @@
+import type { Hours } from "@/content/site";
+
 /** Formats a rupee amount the way prices are written in Pakistan: Rs 6,500. */
 export function formatPKR(amount: number): string {
   return `Rs ${new Intl.NumberFormat("en-PK", { maximumFractionDigits: 0 }).format(amount)}`;
@@ -37,4 +39,18 @@ export function toMinutes(time24: string): number {
  */
 export function fillTemplate(template: string, values: Record<string, string>): string {
   return template.replace(/\{(\w+)\}/g, (_, key: string) => values[key] ?? `{${key}}`);
+}
+
+/**
+ * An opening window as a page shows it: "5 am – 11 pm", or the closed label
+ * when there is no window at all.
+ *
+ * Shared by the board's floor summary and the hours tables, so the two can
+ * never disagree about how a closed day is worded or which dash sits between
+ * the times. The label is passed in rather than written here — "Closed" is a
+ * word on the page, and words on the page come from site.ts.
+ */
+export function formatWindow(hours: Hours, closedLabel: string): string {
+  if (!hours) return closedLabel;
+  return `${formatTime(hours.open)} – ${formatTime(hours.close)}`;
 }

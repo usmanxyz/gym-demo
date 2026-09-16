@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useRef, useState, useSyncExternalStore } from "react";
 import {
   AUDIENCE_LABELS,
@@ -12,9 +13,14 @@ import {
   type ClassSlot,
   type ClassType,
   type DayKey,
-  type Hours,
 } from "@/content/site";
-import { fillTemplate, formatDuration, formatTime, toMinutes } from "@/lib/format";
+import {
+  fillTemplate,
+  formatDuration,
+  formatTime,
+  formatWindow,
+  toMinutes,
+} from "@/lib/format";
 import { todayKey } from "@/lib/day";
 import { waLink } from "@/lib/wa";
 import { Reveal } from "./Reveal";
@@ -24,8 +30,7 @@ type AudienceFilter = Audience | "any";
 type TypeFilter = ClassType | "any";
 
 /**
- * The day of the week according to the visitor's device, or null on the
- * server and during hydration.
+ * The day of the week in Lahore, or null on the server and during hydration.
  *
  * useSyncExternalStore is the tool for exactly this: it hands React a server
  * snapshot to hydrate against and the real client value immediately after, so
@@ -49,13 +54,19 @@ const getServerDay = (): DayKey | null => null;
  * 44px tall and nothing is hover-only, so the whole section works one-handed
  * on a phone.
  *
- * The day it opens on comes from the visitor's own clock, read on the client
- * rather than guessed during render — the server has no idea what day it is
- * where the phone is, and disagreeing about it is a hydration mismatch. Until
+ * The day it opens on is the day at the gym, read on the client rather than
+ * guessed during render — a statically built page has no clock of its own, and
+ * a server guess that disagrees with the browser is a hydration mismatch. Until
  * the client value lands, Monday is shown: a real day with real classes, so
  * the first paint is never empty.
+ *
+ * At preview depth the filter chips come off and a link through to /schedule
+ * goes on. The homepage board answers "what is on today?"; narrowing the week
+ * by floor and by programme is a question you have already chosen to go deeper
+ * to ask.
  */
-export function Schedule() {
+export function Schedule({ variant = "full" }: { variant?: "preview" | "full" }) {
+  const preview = variant === "preview";
   const today = useToday();
   const [picked, setPicked] = useState<DayKey | null>(null);
   const [audience, setAudience] = useState<AudienceFilter>("any");
@@ -76,6 +87,7 @@ export function Schedule() {
   const filtered = audience !== "any" || classType !== "any";
   const gentsHours = site.hours.gents[activeDay];
   const ladiesHours = site.hours.ladies[activeDay];
+  const closedLabel = site.hoursSection.closedLabel;
 
   return (
     <section id="schedule" className="border-t border-iron-line py-20 md:py-28">
@@ -93,37 +105,43 @@ export function Schedule() {
         <Reveal delay={90}>
           <DayTabs active={activeDay} today={today} onPick={setPicked} />
 
-          <div className="mt-4 flex flex-col gap-3">
-            <ChipRow
-              label="Filter by hours"
-              options={[
-                { key: "any" as AudienceFilter, label: "All" },
-                { key: "ladies" as AudienceFilter, label: AUDIENCE_LABELS.ladies },
-                { key: "gents" as AudienceFilter, label: AUDIENCE_LABELS.gents },
-              ]}
-              active={audience}
-              onPick={setAudience}
-            />
-            <ChipRow
-              label="Filter by class"
-              options={[
-                { key: "any" as TypeFilter, label: "All classes" },
-                ...CLASS_TYPES.map((t) => ({ key: t.key as TypeFilter, label: t.label })),
-              ]}
-              active={classType}
-              onPick={setClassType}
-            />
-          </div>
+          {preview ? null : (
+            <div className="mt-4 flex flex-col gap-3">
+              <ChipRow
+                label="Filter by hours"
+                options={[
+                  { key: "any" as AudienceFilter, label: "All" },
+                  { key: "ladies" as AudienceFilter, label: AUDIENCE_LABELS.ladies },
+                  { key: "gents" as AudienceFilter, label: AUDIENCE_LABELS.gents },
+                ]}
+                active={audience}
+                onPick={setAudience}
+              />
+              <ChipRow
+                label="Filter by class"
+                options={[
+                  { key: "any" as TypeFilter, label: "All classes" },
+                  ...CLASS_TYPES.map((t) => ({ key: t.key as TypeFilter, label: t.label })),
+                ]}
+                active={classType}
+                onPick={setClassType}
+              />
+            </div>
+          )}
 
           {/* Whose floor it is that day, so a filtered list has context. */}
           <dl className="mt-6 flex flex-wrap gap-x-8 gap-y-3 border-t border-iron-line pt-5 text-sm">
             <div>
               <dt className="text-smoke">{AUDIENCE_LABELS.gents} floor</dt>
-              <dd className="numeral mt-1 text-base text-amber">{formatWindow(gentsHours)}</dd>
+              <dd className="numeral mt-1 text-base text-amber">
+                {formatWindow(gentsHours, closedLabel)}
+              </dd>
             </div>
             <div>
               <dt className="text-smoke">{AUDIENCE_LABELS.ladies} floor</dt>
-              <dd className="numeral mt-1 text-base text-amber">{formatWindow(ladiesHours)}</dd>
+              <dd className="numeral mt-1 text-base text-amber">
+                {formatWindow(ladiesHours, closedLabel)}
+              </dd>
             </div>
           </dl>
 
@@ -161,6 +179,15 @@ export function Schedule() {
               </ul>
             )}
           </div>
+
+          {preview ? (
+            <Link
+              href="/schedule"
+              className="mt-6 inline-flex min-h-11 items-center text-sm font-medium text-bone underline decoration-iron-line underline-offset-4 transition-colors hover:decoration-bone"
+            >
+              {site.pages.schedule.viewAll}
+            </Link>
+          ) : null}
 
           {filtered && classes.length > 0 ? (
             <button
@@ -403,11 +430,6 @@ function ClassCard({ slot }: { slot: ClassSlot }) {
 function matchesAudience(slot: ClassSlot, filter: AudienceFilter): boolean {
   if (filter === "any") return true;
   return slot.audience === filter || slot.audience === "all";
-}
-
-function formatWindow(hours: Hours): string {
-  if (!hours) return "Closed";
-  return `${formatTime(hours.open)} – ${formatTime(hours.close)}`;
 }
 
 function countLabel(count: number, day: DayKey): string {

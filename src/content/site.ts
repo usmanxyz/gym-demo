@@ -224,6 +224,14 @@ export const site = {
       "During ladies' hours the whole floor is women only, coached by female staff. No gents on the premises.",
       "Public holidays run on Sunday timings. We post changes on WhatsApp.",
     ],
+    /**
+     * Ramadan moves everything, so it is called out on its own rather than
+     * buried as a fourth note: the timings on this page are the rest of the
+     * year's, and a visitor reading them in Ramadan needs to know that before
+     * they drive over.
+     */
+    ramadanNote:
+      "In Ramadan the floor runs 10 am to 3 pm and 9 pm to 1 am for gents, with ladies' hours moving to 11 am to 2 pm. Classes drop to one evening batch after Taraweeh. We confirm the dates on WhatsApp a week before.",
   },
 
   nav: [
@@ -451,6 +459,23 @@ export const site = {
       "Assalam o alaikum! I'd like to book {class} on {day} at {time}. Is there a spot?",
     waWaitlistTemplate:
       "Assalam o alaikum! {class} on {day} at {time} shows as full — could you put me on the waitlist?",
+  },
+
+  /**
+   * The copy around the two gym-floor timing tables. Shared by /schedule and
+   * /visit, which is the whole reason it is here and not in either page.
+   *
+   * The timings themselves are in `hours` above — this is only what the page
+   * says about them.
+   */
+  hoursSection: {
+    heading: "When the floor is open",
+    subhead:
+      "Classes are the timetable above. These are the hours the gym itself is open, when you can walk in and train on your own.",
+    dayColumn: "Day",
+    closedLabel: "Closed",
+    notesHeading: "Worth knowing before you come",
+    ramadanHeading: "Ramadan timings",
   },
 
   /**
