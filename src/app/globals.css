@@ -53,11 +53,22 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Keyboard focus is always visible, in the action colour. */
+  /* Keyboard focus is always visible, in the action colour. The 3px offset
+     puts the ring on the page ground rather than on the control, which is what
+     keeps it above 4.5:1 against both ink and iron. */
   :focus-visible {
     outline: 2px solid var(--color-wrap-hot);
     outline-offset: 3px;
     border-radius: 2px;
+  }
+
+  /* Except on the red buttons themselves. A red ring around a red button
+     clears contrast against the ink behind it and is still the last thing your
+     eye finds — and the primary CTA is the one control a keyboard visitor most
+     needs to spot. Bone reads at 14:1 there. Applied by hand, on the four
+     controls that carry the action colour as a fill. */
+  .on-action:focus-visible {
+    outline-color: var(--color-bone);
   }
 
   ::selection {
@@ -113,5 +124,45 @@
     font-variation-settings: "wdth" 110;
     font-variant-numeric: tabular-nums;
     letter-spacing: 0;
+  }
+}
+
+@layer components {
+  /* ---------------------------------------------------------------------
+     Scroll-in. Deliberately small: 14px and a fade, once, on section-sized
+     blocks only. Anything bigger reads as a page that is still loading.
+
+     The hidden state is gated on [data-js], set by a blocking script at the
+     top of <body>. Without scripting the rule never matches and every block
+     is simply visible — the animation is an enhancement, never the thing
+     standing between a visitor and the booking form.
+  --------------------------------------------------------------------- */
+  [data-reveal] {
+    transition:
+      opacity 600ms cubic-bezier(0.22, 0.61, 0.36, 1),
+      transform 600ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  [data-js] [data-reveal] {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+
+  [data-js] [data-reveal][data-revealed="true"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* Not just a faster transition — no starting offset at all, so a block is
+       never briefly invisible for someone who asked for no movement. */
+    [data-js] [data-reveal] {
+      opacity: 1;
+      transform: none;
+      transition: none;
+      /* The stagger is set inline; without this it would still delay nothing
+         visible, but it keeps the DOM honest. */
+      transition-delay: 0ms !important;
+    }
   }
 }

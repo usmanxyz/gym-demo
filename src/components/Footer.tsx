@@ -1,6 +1,7 @@
 import { Phone } from "lucide-react";
 import { site } from "@/content/site";
 import { waLink } from "@/lib/wa";
+import { Reveal } from "./Reveal";
 import { WhatsAppIcon } from "./WhatsAppIcon";
 
 export function Footer() {
@@ -9,7 +10,7 @@ export function Footer() {
       {/* Extra bottom padding buys clearance for the fixed WhatsApp bubble,
           which otherwise parks on top of the last line of the disclaimer. */}
       <div className="mx-auto max-w-7xl px-5 pb-28 pt-14 md:px-8 md:pb-24 md:pt-20">
-        <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1.2fr]">
+        <Reveal className="grid gap-12 md:grid-cols-[1.4fr_1fr_1.2fr]">
           <div>
             <p className="display text-2xl text-bone">{site.name}</p>
             <p className="mt-4 max-w-sm text-smoke">{site.shortDescription}</p>
@@ -57,7 +58,7 @@ export function Footer() {
               </a>
             </div>
           </div>
-        </div>
+        </Reveal>
 
         <div className="mt-14 border-t border-iron-line pt-8">
           <p className="text-sm font-medium text-bone">{site.footer.credit}</p>

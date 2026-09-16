@@ -6,6 +6,7 @@ import { AUDIENCE_LABELS, site } from "@/content/site";
 import { formatPKR } from "@/lib/format";
 import { formatPkMobile, parsePkMobile } from "@/lib/phone";
 import { waLink } from "@/lib/wa";
+import { Reveal } from "./Reveal";
 import { WhatsAppIcon } from "./WhatsAppIcon";
 
 const form = site.trialForm;
@@ -111,210 +112,217 @@ export function TrialForm() {
           section started 256px to the right of every other left edge on the
           page — not aligned with them and not centred on the page either. */}
       <div className="mx-auto max-w-7xl px-5 md:px-8">
-        <h2 className="display text-3xl text-bone md:text-5xl">{form.heading}</h2>
-        <p className="mt-4 max-w-xl text-smoke md:text-lg">{form.subhead}</p>
+        <Reveal>
+          <h2 className="display text-3xl text-bone md:text-5xl">{form.heading}</h2>
+          <p className="mt-4 max-w-xl text-smoke md:text-lg">{form.subhead}</p>
+        </Reveal>
 
-        <div className="mt-10 max-w-3xl rounded-ui border border-iron-line bg-iron p-5 md:mt-12 md:p-8">
-          {sent ? (
-            <Sent message={sent} onReset={reset} />
-          ) : (
-            <form onSubmit={onSubmit} noValidate className="grid gap-7">
-              <Field
-                label={form.fields.name.label}
-                htmlFor={fieldId("name")}
-                error={errors.name}
-                errorId={errorId("name")}
-              >
-                <input
-                  id={fieldId("name")}
-                  name="name"
-                  type="text"
-                  autoComplete="name"
-                  placeholder={form.fields.name.placeholder}
-                  value={name}
-                  onChange={(e) => {
-                    setName(e.target.value);
-                    revalidate({ name: e.target.value.trim() !== "" });
-                  }}
-                  aria-invalid={errors.name ? true : undefined}
-                  aria-describedby={errors.name ? errorId("name") : undefined}
-                  className={control(!!errors.name)}
-                />
-              </Field>
+        {/* The panel itself moves, not the fields inside it. This is the
+            conversion moment — nothing here is allowed to be still arriving
+            while someone is trying to type into it. */}
+        <Reveal delay={90} className="mt-10 max-w-3xl md:mt-12">
+          <div className="rounded-ui border border-iron-line bg-iron p-5 md:p-8">
+            {sent ? (
+              <Sent message={sent} onReset={reset} />
+            ) : (
+              <form onSubmit={onSubmit} noValidate className="grid gap-7">
+                <Field
+                  label={form.fields.name.label}
+                  htmlFor={fieldId("name")}
+                  error={errors.name}
+                  errorId={errorId("name")}
+                >
+                  <input
+                    id={fieldId("name")}
+                    name="name"
+                    type="text"
+                    autoComplete="name"
+                    placeholder={form.fields.name.placeholder}
+                    value={name}
+                    onChange={(e) => {
+                      setName(e.target.value);
+                      revalidate({ name: e.target.value.trim() !== "" });
+                    }}
+                    aria-invalid={errors.name ? true : undefined}
+                    aria-describedby={errors.name ? errorId("name") : undefined}
+                    className={control(!!errors.name)}
+                  />
+                </Field>
 
-              <Field
-                label={form.fields.phone.label}
-                htmlFor={fieldId("phone")}
-                hint={form.fields.phone.hint}
-                hintId={fieldId("phone-hint")}
-                error={errors.phone}
-                errorId={errorId("phone")}
-              >
-                <input
-                  id={fieldId("phone")}
-                  name="phone"
-                  type="tel"
-                  inputMode="tel"
-                  autoComplete="tel"
-                  placeholder={form.fields.phone.placeholder}
-                  value={phone}
-                  onChange={(e) => {
-                    setPhone(e.target.value);
-                    revalidate({ phone: parsePkMobile(e.target.value) !== null });
-                  }}
-                  onBlur={() => {
-                    // Settle a valid number into the local spelling.
-                    const national = parsePkMobile(phone);
-                    if (national) setPhone(formatPkMobile(national));
-                  }}
-                  aria-invalid={errors.phone ? true : undefined}
-                  aria-describedby={
-                    errors.phone ? errorId("phone") : fieldId("phone-hint")
-                  }
-                  className={`${control(!!errors.phone)} tabular-nums tracking-wide`}
-                />
-              </Field>
-
-              <Field
-                label={form.fields.programme.label}
-                htmlFor={fieldId("programme")}
-                error={errors.programme}
-                errorId={errorId("programme")}
-              >
-                <Select
-                  id={fieldId("programme")}
-                  name="programme"
-                  value={programme}
-                  invalid={!!errors.programme}
-                  describedBy={errors.programme ? errorId("programme") : undefined}
-                  onChange={(value) => {
-                    setProgramme(value);
-                    revalidate({ programme: value !== "" });
-                    // The ladies' programme only runs on the ladies' floor, so
-                    // picking it answers the next question too.
-                    const picked = site.programmes.find((p) => p.slug === value);
-                    if (picked?.audience === "ladies" && floor !== "ladies") {
-                      setFloor("ladies");
-                      setBatch("");
-                      revalidate({ floor: true });
+                <Field
+                  label={form.fields.phone.label}
+                  htmlFor={fieldId("phone")}
+                  hint={form.fields.phone.hint}
+                  hintId={fieldId("phone-hint")}
+                  error={errors.phone}
+                  errorId={errorId("phone")}
+                >
+                  <input
+                    id={fieldId("phone")}
+                    name="phone"
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    placeholder={form.fields.phone.placeholder}
+                    value={phone}
+                    onChange={(e) => {
+                      setPhone(e.target.value);
+                      revalidate({ phone: parsePkMobile(e.target.value) !== null });
+                    }}
+                    onBlur={() => {
+                      // Settle a valid number into the local spelling.
+                      const national = parsePkMobile(phone);
+                      if (national) setPhone(formatPkMobile(national));
+                    }}
+                    aria-invalid={errors.phone ? true : undefined}
+                    aria-describedby={
+                      errors.phone ? errorId("phone") : fieldId("phone-hint")
                     }
-                  }}
-                >
-                  <option value="">{form.fields.programme.placeholder}</option>
-                  {site.programmes.map((p) => (
-                    <option key={p.slug} value={p.slug}>
-                      {p.name}
-                    </option>
-                  ))}
-                </Select>
-              </Field>
+                    className={`${control(!!errors.phone)} tabular-nums tracking-wide`}
+                  />
+                </Field>
 
-              <div>
-                <p id={fieldId("floor-label")} className="text-sm font-medium text-bone">
-                  {form.fields.floor.label}
-                </p>
-                <div
-                  role="radiogroup"
-                  aria-labelledby={fieldId("floor-label")}
-                  aria-invalid={errors.floor ? true : undefined}
-                  aria-describedby={errors.floor ? errorId("floor") : undefined}
-                  className="mt-2.5 grid grid-cols-2 gap-2"
+                <Field
+                  label={form.fields.programme.label}
+                  htmlFor={fieldId("programme")}
+                  error={errors.programme}
+                  errorId={errorId("programme")}
                 >
-                  {FLOORS.map((key, index) => (
-                    <Choice
-                      key={key}
-                      id={index === 0 ? fieldId("floor") : undefined}
-                      name="floor"
-                      label={AUDIENCE_LABELS[key]}
-                      checked={floor === key}
-                      invalid={!!errors.floor}
-                      onSelect={() => {
-                        setFloor(key);
-                        // The two floors keep different hours, so a batch
-                        // chosen for one means nothing on the other.
+                  <Select
+                    id={fieldId("programme")}
+                    name="programme"
+                    value={programme}
+                    invalid={!!errors.programme}
+                    describedBy={errors.programme ? errorId("programme") : undefined}
+                    onChange={(value) => {
+                      setProgramme(value);
+                      revalidate({ programme: value !== "" });
+                      // The ladies' programme only runs on the ladies' floor, so
+                      // picking it answers the next question too.
+                      const picked = site.programmes.find((p) => p.slug === value);
+                      if (picked?.audience === "ladies" && floor !== "ladies") {
+                        setFloor("ladies");
                         setBatch("");
                         revalidate({ floor: true });
-                      }}
-                    />
-                  ))}
-                </div>
-                <ErrorText id={errorId("floor")} message={errors.floor} />
-              </div>
+                      }
+                    }}
+                  >
+                    <option value="">{form.fields.programme.placeholder}</option>
+                    {site.programmes.map((p) => (
+                      <option key={p.slug} value={p.slug}>
+                        {p.name}
+                      </option>
+                    ))}
+                  </Select>
+                </Field>
 
-              <div>
-                <p id={fieldId("batch-label")} className="text-sm font-medium text-bone">
-                  {form.fields.batch.label}
-                </p>
-                {floor ? (
+                <div>
+                  <p id={fieldId("floor-label")} className="text-sm font-medium text-bone">
+                    {form.fields.floor.label}
+                  </p>
                   <div
                     role="radiogroup"
-                    aria-labelledby={fieldId("batch-label")}
-                    aria-invalid={errors.batch ? true : undefined}
-                    aria-describedby={errors.batch ? errorId("batch") : undefined}
-                    className="mt-2.5 grid gap-2 sm:grid-cols-2"
+                    aria-labelledby={fieldId("floor-label")}
+                    aria-invalid={errors.floor ? true : undefined}
+                    aria-describedby={errors.floor ? errorId("floor") : undefined}
+                    className="mt-2.5 grid grid-cols-2 gap-2"
                   >
-                    {batches.map((option, index) => (
+                    {FLOORS.map((key, index) => (
                       <Choice
-                        key={option.key}
-                        id={index === 0 ? fieldId("batch") : undefined}
-                        name="batch"
-                        label={option.label}
-                        detail={option.window}
-                        checked={batch === option.key}
-                        invalid={!!errors.batch}
+                        key={key}
+                        id={index === 0 ? fieldId("floor") : undefined}
+                        name="floor"
+                        label={AUDIENCE_LABELS[key]}
+                        checked={floor === key}
+                        invalid={!!errors.floor}
                         onSelect={() => {
-                          setBatch(option.key);
-                          revalidate({ batch: true });
+                          setFloor(key);
+                          // The two floors keep different hours, so a batch
+                          // chosen for one means nothing on the other.
+                          setBatch("");
+                          revalidate({ floor: true });
                         }}
                       />
                     ))}
                   </div>
-                ) : (
-                  <p className="mt-2.5 text-sm text-smoke">
-                    Pick a floor and its timings appear here.
+                  <ErrorText id={errorId("floor")} message={errors.floor} />
+                </div>
+
+                <div>
+                  <p id={fieldId("batch-label")} className="text-sm font-medium text-bone">
+                    {form.fields.batch.label}
                   </p>
-                )}
-                <ErrorText id={errorId("batch")} message={errors.batch} />
-              </div>
+                  {floor ? (
+                    <div
+                      role="radiogroup"
+                      aria-labelledby={fieldId("batch-label")}
+                      aria-invalid={errors.batch ? true : undefined}
+                      aria-describedby={errors.batch ? errorId("batch") : undefined}
+                      className="mt-2.5 grid gap-2 sm:grid-cols-2"
+                    >
+                      {batches.map((option, index) => (
+                        <Choice
+                          key={option.key}
+                          id={index === 0 ? fieldId("batch") : undefined}
+                          name="batch"
+                          label={option.label}
+                          detail={option.window}
+                          checked={batch === option.key}
+                          invalid={!!errors.batch}
+                          onSelect={() => {
+                            setBatch(option.key);
+                            revalidate({ batch: true });
+                          }}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="mt-2.5 text-sm text-smoke">
+                      Pick a floor and its timings appear here.
+                    </p>
+                  )}
+                  <ErrorText id={errorId("batch")} message={errors.batch} />
+                </div>
 
-              <Field
-                label={form.fields.plan.label}
-                htmlFor={fieldId("plan")}
-                optional={form.fields.plan.optional}
-                hint={form.fields.plan.hint}
-                hintId={fieldId("plan-hint")}
-              >
-                <Select
-                  id={fieldId("plan")}
-                  name="plan"
-                  value={plan}
-                  describedBy={fieldId("plan-hint")}
-                  onChange={setPlan}
+                <Field
+                  label={form.fields.plan.label}
+                  htmlFor={fieldId("plan")}
+                  optional={form.fields.plan.optional}
+                  hint={form.fields.plan.hint}
+                  hintId={fieldId("plan-hint")}
                 >
-                  <option value="">{form.fields.plan.placeholder}</option>
-                  {site.membership.plans.map((p) => (
-                    <option key={p.slug} value={p.slug}>
-                      {p.name} — {formatPKR(p.pricePKR)}
-                    </option>
-                  ))}
-                </Select>
-              </Field>
+                  <Select
+                    id={fieldId("plan")}
+                    name="plan"
+                    value={plan}
+                    describedBy={fieldId("plan-hint")}
+                    onChange={setPlan}
+                  >
+                    <option value="">{form.fields.plan.placeholder}</option>
+                    {site.membership.plans.map((p) => (
+                      <option key={p.slug} value={p.slug}>
+                        {p.name} — {formatPKR(p.pricePKR)}
+                      </option>
+                    ))}
+                  </Select>
+                </Field>
 
-              <div>
-                {/* Full width, so the floating WhatsApp bubble in the corner
-                    can never sit on top of the way to book. */}
-                <button
-                  type="submit"
-                  className="flex min-h-14 w-full items-center justify-center gap-2.5 rounded-ui bg-wrap px-6 text-base font-semibold text-white transition-colors hover:bg-wrap-deep"
-                >
-                  <WhatsAppIcon className="size-5 shrink-0" aria-hidden />
-                  {form.submit}
-                </button>
-                <p className="mt-3 text-center text-sm text-smoke">{form.submitNote}</p>
-              </div>
-            </form>
-          )}
-        </div>
+                <div>
+                  {/* Full width, so the floating WhatsApp bubble in the corner
+                      can never sit on top of the way to book. */}
+                  <button
+                    type="submit"
+                    className="on-action flex min-h-14 w-full items-center justify-center gap-2.5 rounded-ui bg-wrap px-6 text-base font-semibold text-white transition-colors hover:bg-wrap-deep"
+                  >
+                    <WhatsAppIcon className="size-5 shrink-0" aria-hidden />
+                    {form.submit}
+                  </button>
+                  <p className="mt-3 text-center text-sm text-smoke">{form.submitNote}</p>
+                </div>
+              </form>
+            )}
+          </div>
+        </Reveal>
       </div>
     </section>
   );
@@ -339,10 +347,13 @@ function Sent({ message, onReset }: { message: string; onReset: () => void }) {
         <Check className="size-7" strokeWidth={3} />
       </span>
 
+      {/* The ring is deliberately left on. Focus lands here by script rather
+          than by tabbing, and a keyboard visitor who pressed Enter on Submit
+          needs to see where the page moved them to. */}
       <h3
         ref={heading}
         tabIndex={-1}
-        className="display-tight mt-5 text-2xl text-bone outline-none md:text-3xl"
+        className="display-tight mt-5 text-2xl text-bone md:text-3xl"
       >
         {form.success.heading}
       </h3>

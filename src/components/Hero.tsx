@@ -74,7 +74,7 @@ export function Hero() {
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center md:mt-10">
           <a
             href="#book"
-            className="rounded-ui bg-wrap px-7 py-4 text-center text-base font-semibold text-white transition-colors hover:bg-wrap-deep"
+            className="on-action rounded-ui bg-wrap px-7 py-4 text-center text-base font-semibold text-white transition-colors hover:bg-wrap-deep"
           >
             {primaryCta}
           </a>

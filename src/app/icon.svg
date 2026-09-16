@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Iron Fitness">
+  <title>Iron Fitness</title>
+  <!-- The monogram is drawn as bars rather than set in Archivo: at 16px a
+       font-set "IF" is at the mercy of whatever the OS hints it into, and an
+       icon file that carries no font dependency renders identically everywhere.
+       The proportions are Archivo Expanded's — wide stems, high crossbar. -->
+  <rect width="32" height="32" rx="6" fill="#D8342A"/>
+  <g fill="#E9E4DA">
+    <rect x="6" y="9" width="4.5" height="14"/>
+    <rect x="13.5" y="9" width="4.5" height="14"/>
+    <rect x="18" y="9" width="8" height="4"/>
+    <rect x="18" y="15.5" width="6.25" height="3.75"/>
+  </g>
+</svg>

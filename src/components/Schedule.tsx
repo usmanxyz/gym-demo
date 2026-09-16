@@ -17,6 +17,7 @@ import {
 import { formatDuration, formatTime, toMinutes } from "@/lib/format";
 import { todayKey } from "@/lib/day";
 import { waLink } from "@/lib/wa";
+import { Reveal } from "./Reveal";
 import { WhatsAppIcon } from "./WhatsAppIcon";
 
 type AudienceFilter = Audience | "any";
@@ -79,94 +80,101 @@ export function Schedule() {
   return (
     <section id="schedule" className="border-t border-iron-line py-20 md:py-28">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
-        <h2 className="display max-w-[20ch] text-3xl text-bone md:text-5xl">
-          {site.scheduleSection.heading}
-        </h2>
-        <p className="mt-4 max-w-xl text-smoke md:text-lg">{site.scheduleSection.subhead}</p>
+        <Reveal>
+          <h2 className="display max-w-[20ch] text-3xl text-bone md:text-5xl">
+            {site.scheduleSection.heading}
+          </h2>
+          <p className="mt-4 max-w-xl text-smoke md:text-lg">{site.scheduleSection.subhead}</p>
+        </Reveal>
 
-        <DayTabs active={activeDay} today={today} onPick={setPicked} />
+        {/* The board arrives just behind its own heading. One block, not one
+            per card — a timetable that assembles row by row is a timetable you
+            can't read yet. */}
+        <Reveal delay={90}>
+          <DayTabs active={activeDay} today={today} onPick={setPicked} />
 
-        <div className="mt-4 flex flex-col gap-3">
-          <ChipRow
-            label="Filter by hours"
-            options={[
-              { key: "any" as AudienceFilter, label: "All" },
-              { key: "ladies" as AudienceFilter, label: AUDIENCE_LABELS.ladies },
-              { key: "gents" as AudienceFilter, label: AUDIENCE_LABELS.gents },
-            ]}
-            active={audience}
-            onPick={setAudience}
-          />
-          <ChipRow
-            label="Filter by class"
-            options={[
-              { key: "any" as TypeFilter, label: "All classes" },
-              ...CLASS_TYPES.map((t) => ({ key: t.key as TypeFilter, label: t.label })),
-            ]}
-            active={classType}
-            onPick={setClassType}
-          />
-        </div>
-
-        {/* Whose floor it is that day, so a filtered list has context. */}
-        <dl className="mt-6 flex flex-wrap gap-x-8 gap-y-3 border-t border-iron-line pt-5 text-sm">
-          <div>
-            <dt className="text-smoke">{AUDIENCE_LABELS.gents} floor</dt>
-            <dd className="numeral mt-1 text-base text-amber">{formatWindow(gentsHours)}</dd>
+          <div className="mt-4 flex flex-col gap-3">
+            <ChipRow
+              label="Filter by hours"
+              options={[
+                { key: "any" as AudienceFilter, label: "All" },
+                { key: "ladies" as AudienceFilter, label: AUDIENCE_LABELS.ladies },
+                { key: "gents" as AudienceFilter, label: AUDIENCE_LABELS.gents },
+              ]}
+              active={audience}
+              onPick={setAudience}
+            />
+            <ChipRow
+              label="Filter by class"
+              options={[
+                { key: "any" as TypeFilter, label: "All classes" },
+                ...CLASS_TYPES.map((t) => ({ key: t.key as TypeFilter, label: t.label })),
+              ]}
+              active={classType}
+              onPick={setClassType}
+            />
           </div>
-          <div>
-            <dt className="text-smoke">{AUDIENCE_LABELS.ladies} floor</dt>
-            <dd className="numeral mt-1 text-base text-amber">{formatWindow(ladiesHours)}</dd>
-          </div>
-        </dl>
 
-        <div
-          role="tabpanel"
-          id={`schedule-panel-${activeDay}`}
-          aria-labelledby={`schedule-tab-${activeDay}`}
-          className="mt-8"
-        >
-          <p aria-live="polite" className="text-sm text-smoke">
-            {countLabel(classes.length, activeDay)}
-          </p>
-
-          {classes.length === 0 ? (
-            <div className="mt-4 rounded-ui border border-iron-line bg-iron p-6">
-              <p className="text-bone">
-                Nothing on {DAY_LABELS[activeDay].long} matches those filters.
-              </p>
-              <button
-                type="button"
-                onClick={() => {
-                  setAudience("any");
-                  setClassType("any");
-                }}
-                className="mt-4 min-h-11 rounded-ui border border-iron-line px-5 font-medium text-bone transition-colors hover:border-bone/40"
-              >
-                Show every class
-              </button>
+          {/* Whose floor it is that day, so a filtered list has context. */}
+          <dl className="mt-6 flex flex-wrap gap-x-8 gap-y-3 border-t border-iron-line pt-5 text-sm">
+            <div>
+              <dt className="text-smoke">{AUDIENCE_LABELS.gents} floor</dt>
+              <dd className="numeral mt-1 text-base text-amber">{formatWindow(gentsHours)}</dd>
             </div>
-          ) : (
-            <ul className="mt-4 grid gap-3 lg:grid-cols-2">
-              {classes.map((slot) => (
-                <ClassCard key={`${slot.day}-${slot.start}-${slot.name}`} slot={slot} />
-              ))}
-            </ul>
-          )}
-        </div>
+            <div>
+              <dt className="text-smoke">{AUDIENCE_LABELS.ladies} floor</dt>
+              <dd className="numeral mt-1 text-base text-amber">{formatWindow(ladiesHours)}</dd>
+            </div>
+          </dl>
 
-        {filtered && classes.length > 0 ? (
-          <button
-            type="button"
-            onClick={() => {
-              setAudience("any");
-              setClassType("any");
-            }}
-            className="mt-5 min-h-11 text-sm font-medium text-smoke underline decoration-iron-line underline-offset-4 transition-colors hover:text-bone"
+          <div
+            role="tabpanel"
+            id={`schedule-panel-${activeDay}`}
+            aria-labelledby={`schedule-tab-${activeDay}`}
+            className="mt-8"
           >
-            Clear filters
-          </button>
-        ) : null}
+            <p aria-live="polite" className="text-sm text-smoke">
+              {countLabel(classes.length, activeDay)}
+            </p>
+
+            {classes.length === 0 ? (
+              <div className="mt-4 rounded-ui border border-iron-line bg-iron p-6">
+                <p className="text-bone">
+                  Nothing on {DAY_LABELS[activeDay].long} matches those filters.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAudience("any");
+                    setClassType("any");
+                  }}
+                  className="mt-4 min-h-11 rounded-ui border border-iron-line px-5 font-medium text-bone transition-colors hover:border-bone/40"
+                >
+                  Show every class
+                </button>
+              </div>
+            ) : (
+              <ul className="mt-4 grid gap-3 lg:grid-cols-2">
+                {classes.map((slot) => (
+                  <ClassCard key={`${slot.day}-${slot.start}-${slot.name}`} slot={slot} />
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {filtered && classes.length > 0 ? (
+            <button
+              type="button"
+              onClick={() => {
+                setAudience("any");
+                setClassType("any");
+              }}
+              className="mt-5 min-h-11 text-sm font-medium text-smoke underline decoration-iron-line underline-offset-4 transition-colors hover:text-bone"
+            >
+              Clear filters
+            </button>
+          ) : null}
+        </Reveal>
       </div>
     </section>
   );
