@@ -100,11 +100,10 @@ export const site = {
     "Coached strength, boxing and conditioning in DHA Phase 5, Lahore. Open 5 am to 11 pm, with the whole floor reserved for women every afternoon. First session free.",
 
   contact: {
-    // Demo number. Replace with the client's real WhatsApp before this goes
-    // in front of anyone who might actually tap it.
-    phone: "+923000000000",
-    phoneDisplay: "+92 300 000 0000",
-    whatsapp: "923000000000",
+    phone: "+923224007617",
+    phoneDisplay: "0322 400 7617",
+    // wa.me wants the number in international form with no punctuation.
+    whatsapp: "923224007617",
     waBaseMessage:
       "Assalam o alaikum! I saw the Iron Fitness website and I'd like to book my free session.",
   },

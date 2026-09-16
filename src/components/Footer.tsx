@@ -48,9 +48,9 @@ export function Footer() {
                 href={waLink()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-bone transition-colors hover:text-wrap-hot"
+                className="flex items-center gap-2 text-bone transition-colors hover:text-whatsapp"
               >
-                <WhatsAppIcon className="size-4 shrink-0" />
+                <WhatsAppIcon className="size-4 shrink-0 text-whatsapp" />
                 Message us on WhatsApp
               </a>
             </div>

@@ -21,6 +21,12 @@
   --color-wrap: #d8342a; /* action only */
   --color-wrap-hot: #ef4436; /* action, hover */
 
+  /* The one colour that comes from outside this palette. WhatsApp green is
+     doing a job no house colour can do: it is recognised before it is read.
+     Used only for the WhatsApp affordance, never for anything else. */
+  --color-whatsapp: #25d366;
+  --color-whatsapp-hot: #1ebe5b;
+
   --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
   --font-body: var(--font-barlow), ui-sans-serif, system-ui, sans-serif;
 
