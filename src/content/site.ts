@@ -136,6 +136,27 @@ export type Trainer = {
   waMessage: string;
 };
 
+/**
+ * A schematic of the streets around the gym, drawn as an inline SVG rather
+ * than embedded from a map provider. The labels live here because they are
+ * business content; the path geometry lives in the component because SVG
+ * coordinates are design.
+ *
+ * `roads` and `landmarks` are paired with the component's geometry by index,
+ * so they are written in the order the schematic draws them.
+ */
+export type AreaMap = {
+  /** The honest note under the map: the marker is approximate. */
+  caption: string;
+  /** What the amber marker is called on the drawing. */
+  markerLabel: string;
+  roads: string[];
+  landmarks: string[];
+};
+
+/** One thing worth putting in your bag before a first session. */
+export type BringItem = { title: string; detail: string };
+
 export type Review = {
   quote: string;
   name: string;
@@ -222,6 +243,27 @@ export const site = {
     landmark: "Above the Y-Block pharmacy, opposite the Phase 5 park",
     parking: "Covered parking for 20 cars and 30 bikes, free for members",
     mapsUrl: "https://maps.google.com/?q=DHA+Phase+5+Main+Boulevard+Lahore",
+
+    /**
+     * How to get here said the way you would say it on the phone, which is
+     * how anyone actually navigates DHA: by the turn, the landmark and the
+     * side of the road, not by the house number.
+     */
+    directions: [
+      "From Main Boulevard, keep the Phase 5 park on your right and slow down at the petrol pump — we are the next block after it.",
+      "Coming down Khayaban-e-Firdousi, turn onto Main Boulevard at the park and we are 200 metres along on the left.",
+      "The pharmacy sign is the one to look for. Our entrance is the glass door to its left, and the stairs go straight up to the floor.",
+      "If you end up at the Y-Block market you have gone one block too far. Turn around at the mosque.",
+    ],
+
+    areaMap: {
+      caption:
+        "A schematic of the block, not a map. The marker sits on an approximate spot — Iron Fitness is a concept demo, so nothing here points at anybody's real premises.",
+      markerLabel: "Iron Fitness",
+      // Written in the order the schematic draws them.
+      roads: ["Main Boulevard", "Khayaban-e-Firdousi", "Y-Block service road"],
+      landmarks: ["Y-Block park", "Y-Block market", "Petrol pump", "Phase 5 mosque"],
+    } as AreaMap,
   },
 
   hours: {
@@ -570,6 +612,72 @@ export const site = {
     closedLabel: "Closed",
     notesHeading: "Worth knowing before you come",
     ramadanHeading: "Ramadan timings",
+  },
+
+  /**
+   * The copy around /visit. Next to `hoursSection` because the two answer the
+   * same visitor's two questions — where is it, and when should I drive over
+   * — and the page renders them one after the other.
+   *
+   * The address, the landmark, the parking and the map labels are all up in
+   * `location`; this is only what the page says around them.
+   */
+  visitSection: {
+    address: {
+      heading: "Where we are",
+      subhead:
+        "On Main Boulevard in DHA Phase 5, a block past the petrol pump. Everyone finds it by the pharmacy sign.",
+      landmarkLabel: "Look for",
+      parkingLabel: "Parking",
+      phoneLabel: "Phone",
+      directionsCta: "Get directions",
+      callCta: "Call the desk",
+      waCta: "Ask on WhatsApp",
+      /** The one message sent from this page that isn't the booking band's. */
+      waMessage:
+        "Assalam o alaikum! I'm heading over to Iron Fitness — could you send me the location?",
+    },
+
+    directions: {
+      heading: "Finding the door",
+      subhead:
+        "Four sentences, the way we'd say them on the phone. DHA is navigated by landmarks, not house numbers.",
+    },
+
+    bring: {
+      heading: "What to bring",
+      subhead:
+        "Short list, because most of it is already here. Nothing on it costs anything and nothing needs buying first.",
+    },
+  },
+
+  visit: {
+    /**
+     * For the first session specifically. What happens during it is
+     * `firstVisit` above — this is only what goes in the bag.
+     */
+    bring: [
+      {
+        title: "Shoes you can lift in",
+        detail:
+          "Flat soles, changed at the door. Street shoes don't go on the floor and a soft running sole is no help under a bar. Boxing gloves and wraps we lend you.",
+      },
+      {
+        title: "A water bottle",
+        detail:
+          "There's a cooler on each floor to refill from. We stopped selling bottled water when we worked out how much plastic a week it was.",
+      },
+      {
+        title: "Your CNIC, if you're joining",
+        detail:
+          "Only needed the day you sign up, for the membership form. The free session needs nothing but your name.",
+      },
+      {
+        title: "Nothing else",
+        detail:
+          "A towel, a locker and a lock are handed to you at the desk, and the changing rooms have showers and soap. Leave your bag in the locker, not on the floor.",
+      },
+    ] as BringItem[],
   },
 
   /**
