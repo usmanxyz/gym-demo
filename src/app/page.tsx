@@ -1,4 +1,5 @@
 import { Hero } from "@/components/Hero";
+import { Schedule } from "@/components/Schedule";
 import { site } from "@/content/site";
 
 /**
@@ -10,6 +11,8 @@ export default function Home() {
   return (
     <>
       <Hero />
+
+      <Schedule />
 
       {/* Step 9 replaces this with the real free-trial form. It stands in for
           now so the hero's primary CTA has something to scroll to. */}

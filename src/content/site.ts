@@ -26,13 +26,25 @@ export type Program = {
   alt: string;
 };
 
+/** How hard a class is, for the three-bar meter on the schedule cards. */
+export type Intensity = "easy" | "moderate" | "hard";
+
+/** Groups a class with the programme it belongs to, so the board can filter. */
+export type ClassType = "strength" | "hiit" | "boxing" | "yoga" | "open";
+
 export type ClassSlot = {
   day: DayKey;
   start: string;
   end: string;
   name: string;
+  /** Which programme this class belongs to — drives the filter chips. */
+  type: ClassType;
   coach: string;
   audience: Audience;
+  intensity: Intensity;
+  /** How many the floor takes for this slot, and how many are still free. */
+  capacity: number;
+  spotsLeft: number;
 };
 
 export type Plan = {
@@ -91,6 +103,32 @@ export const DAY_LABELS: Record<DayKey, { short: string; long: string }> = {
   fri: { short: "Fri", long: "Friday" },
   sat: { short: "Sat", long: "Saturday" },
   sun: { short: "Sun", long: "Sunday" },
+};
+
+/** Chip labels for the audience filter on the schedule. */
+export const AUDIENCE_LABELS: Record<Audience, string> = {
+  all: "Everyone",
+  ladies: "Ladies",
+  gents: "Gents",
+};
+
+/**
+ * Chip labels for the class-type filter, in the order they appear. Ordered
+ * loudest-first: the lifts people come here for, then the calm one.
+ */
+export const CLASS_TYPES: readonly { key: ClassType; label: string }[] = [
+  { key: "strength", label: "Strength" },
+  { key: "hiit", label: "HIIT" },
+  { key: "boxing", label: "Boxing" },
+  { key: "yoga", label: "Yoga" },
+  { key: "open", label: "Open floor" },
+] as const;
+
+/** Three levels, so the meter on a card has something to fill. */
+export const INTENSITY_LABELS: Record<Intensity, { label: string; level: 1 | 2 | 3 }> = {
+  easy: { label: "Easy", level: 1 },
+  moderate: { label: "Moderate", level: 2 },
+  hard: { label: "Hard", level: 3 },
 };
 
 export const site = {
@@ -226,53 +264,67 @@ export const site = {
     },
   ] as Program[],
 
+  // Capacity and spots left are a snapshot: a real gym would read these
+  // from its booking system. They exist so the cards can show how full a
+  // class is, and so "full" has something to render.
   schedule: [
     // Monday
-    { day: "mon", start: "06:00", end: "07:00", name: "Strength", coach: "Bilal", audience: "gents" },
-    { day: "mon", start: "07:15", end: "08:00", name: "HIIT", coach: "Hamza", audience: "gents" },
-    { day: "mon", start: "13:30", end: "14:30", name: "Ladies Strength", coach: "Ayesha", audience: "ladies" },
-    { day: "mon", start: "15:30", end: "16:15", name: "Ladies HIIT", coach: "Ayesha", audience: "ladies" },
-    { day: "mon", start: "19:00", end: "20:00", name: "Boxing", coach: "Hamza", audience: "gents" },
-    { day: "mon", start: "20:30", end: "21:30", name: "Strength", coach: "Bilal", audience: "gents" },
+    { day: "mon", start: "06:00", end: "07:00", name: "Strength", type: "strength", coach: "Bilal", audience: "gents", intensity: "hard", capacity: 16, spotsLeft: 5 },
+    { day: "mon", start: "07:15", end: "08:00", name: "HIIT", type: "hiit", coach: "Hamza", audience: "gents", intensity: "hard", capacity: 20, spotsLeft: 9 },
+    { day: "mon", start: "13:30", end: "14:30", name: "Ladies Strength", type: "strength", coach: "Ayesha", audience: "ladies", intensity: "moderate", capacity: 14, spotsLeft: 4 },
+    { day: "mon", start: "15:30", end: "16:15", name: "Ladies HIIT", type: "hiit", coach: "Ayesha", audience: "ladies", intensity: "hard", capacity: 16, spotsLeft: 7 },
+    { day: "mon", start: "19:00", end: "20:00", name: "Boxing", type: "boxing", coach: "Hamza", audience: "gents", intensity: "hard", capacity: 14, spotsLeft: 2 },
+    { day: "mon", start: "20:30", end: "21:30", name: "Strength", type: "strength", coach: "Bilal", audience: "gents", intensity: "hard", capacity: 16, spotsLeft: 6 },
     // Tuesday
-    { day: "tue", start: "06:00", end: "06:45", name: "HIIT", coach: "Hamza", audience: "gents" },
-    { day: "tue", start: "07:15", end: "08:05", name: "Yoga & Mobility", coach: "Ayesha", audience: "all" },
-    { day: "tue", start: "13:30", end: "14:20", name: "Ladies Yoga", coach: "Ayesha", audience: "ladies" },
-    { day: "tue", start: "15:30", end: "16:30", name: "Ladies Strength", coach: "Ayesha", audience: "ladies" },
-    { day: "tue", start: "19:00", end: "20:00", name: "Strength", coach: "Bilal", audience: "gents" },
-    { day: "tue", start: "20:30", end: "21:15", name: "HIIT", coach: "Hamza", audience: "gents" },
+    { day: "tue", start: "06:00", end: "06:45", name: "HIIT", type: "hiit", coach: "Hamza", audience: "gents", intensity: "hard", capacity: 20, spotsLeft: 11 },
+    { day: "tue", start: "07:15", end: "08:05", name: "Yoga & Mobility", type: "yoga", coach: "Ayesha", audience: "all", intensity: "easy", capacity: 18, spotsLeft: 8 },
+    { day: "tue", start: "13:30", end: "14:20", name: "Ladies Yoga", type: "yoga", coach: "Ayesha", audience: "ladies", intensity: "easy", capacity: 18, spotsLeft: 10 },
+    { day: "tue", start: "15:30", end: "16:30", name: "Ladies Strength", type: "strength", coach: "Ayesha", audience: "ladies", intensity: "moderate", capacity: 14, spotsLeft: 3 },
+    { day: "tue", start: "19:00", end: "20:00", name: "Strength", type: "strength", coach: "Bilal", audience: "gents", intensity: "hard", capacity: 16, spotsLeft: 1 },
+    { day: "tue", start: "20:30", end: "21:15", name: "HIIT", type: "hiit", coach: "Hamza", audience: "gents", intensity: "hard", capacity: 20, spotsLeft: 8 },
     // Wednesday
-    { day: "wed", start: "06:00", end: "07:00", name: "Strength", coach: "Bilal", audience: "gents" },
-    { day: "wed", start: "07:15", end: "08:00", name: "HIIT", coach: "Hamza", audience: "gents" },
-    { day: "wed", start: "13:30", end: "14:30", name: "Ladies Strength", coach: "Ayesha", audience: "ladies" },
-    { day: "wed", start: "15:30", end: "16:30", name: "Ladies Boxing", coach: "Ayesha", audience: "ladies" },
-    { day: "wed", start: "19:00", end: "20:00", name: "Boxing", coach: "Hamza", audience: "gents" },
-    { day: "wed", start: "20:30", end: "21:30", name: "Strength", coach: "Bilal", audience: "gents" },
+    { day: "wed", start: "06:00", end: "07:00", name: "Strength", type: "strength", coach: "Bilal", audience: "gents", intensity: "hard", capacity: 16, spotsLeft: 6 },
+    { day: "wed", start: "07:15", end: "08:00", name: "HIIT", type: "hiit", coach: "Hamza", audience: "gents", intensity: "hard", capacity: 20, spotsLeft: 12 },
+    { day: "wed", start: "13:30", end: "14:30", name: "Ladies Strength", type: "strength", coach: "Ayesha", audience: "ladies", intensity: "moderate", capacity: 14, spotsLeft: 5 },
+    { day: "wed", start: "15:30", end: "16:30", name: "Ladies Boxing", type: "boxing", coach: "Ayesha", audience: "ladies", intensity: "moderate", capacity: 12, spotsLeft: 4 },
+    { day: "wed", start: "19:00", end: "20:00", name: "Boxing", type: "boxing", coach: "Hamza", audience: "gents", intensity: "hard", capacity: 14, spotsLeft: 0 },
+    { day: "wed", start: "20:30", end: "21:30", name: "Strength", type: "strength", coach: "Bilal", audience: "gents", intensity: "hard", capacity: 16, spotsLeft: 7 },
     // Thursday
-    { day: "thu", start: "06:00", end: "06:45", name: "HIIT", coach: "Hamza", audience: "gents" },
-    { day: "thu", start: "07:15", end: "08:05", name: "Yoga & Mobility", coach: "Ayesha", audience: "all" },
-    { day: "thu", start: "13:30", end: "14:20", name: "Ladies Yoga", coach: "Ayesha", audience: "ladies" },
-    { day: "thu", start: "15:30", end: "16:30", name: "Ladies Strength", coach: "Ayesha", audience: "ladies" },
-    { day: "thu", start: "19:00", end: "20:00", name: "Strength", coach: "Bilal", audience: "gents" },
-    { day: "thu", start: "20:30", end: "21:15", name: "HIIT", coach: "Hamza", audience: "gents" },
-    // Friday
-    { day: "fri", start: "06:00", end: "07:00", name: "Strength", coach: "Bilal", audience: "gents" },
-    { day: "fri", start: "07:15", end: "08:00", name: "HIIT", coach: "Hamza", audience: "gents" },
-    { day: "fri", start: "15:30", end: "16:30", name: "Ladies Strength", coach: "Ayesha", audience: "ladies" },
-    { day: "fri", start: "19:00", end: "20:00", name: "Boxing", coach: "Hamza", audience: "gents" },
-    { day: "fri", start: "20:30", end: "21:30", name: "Strength", coach: "Bilal", audience: "gents" },
+    { day: "thu", start: "06:00", end: "06:45", name: "HIIT", type: "hiit", coach: "Hamza", audience: "gents", intensity: "hard", capacity: 20, spotsLeft: 10 },
+    { day: "thu", start: "07:15", end: "08:05", name: "Yoga & Mobility", type: "yoga", coach: "Ayesha", audience: "all", intensity: "easy", capacity: 18, spotsLeft: 9 },
+    { day: "thu", start: "13:30", end: "14:20", name: "Ladies Yoga", type: "yoga", coach: "Ayesha", audience: "ladies", intensity: "easy", capacity: 18, spotsLeft: 11 },
+    { day: "thu", start: "15:30", end: "16:30", name: "Ladies Strength", type: "strength", coach: "Ayesha", audience: "ladies", intensity: "moderate", capacity: 14, spotsLeft: 2 },
+    { day: "thu", start: "19:00", end: "20:00", name: "Strength", type: "strength", coach: "Bilal", audience: "gents", intensity: "hard", capacity: 16, spotsLeft: 3 },
+    { day: "thu", start: "20:30", end: "21:15", name: "HIIT", type: "hiit", coach: "Hamza", audience: "gents", intensity: "hard", capacity: 20, spotsLeft: 9 },
+    // Friday — the floor closes for Jummah, so nothing runs midday
+    { day: "fri", start: "06:00", end: "07:00", name: "Strength", type: "strength", coach: "Bilal", audience: "gents", intensity: "hard", capacity: 16, spotsLeft: 8 },
+    { day: "fri", start: "07:15", end: "08:00", name: "HIIT", type: "hiit", coach: "Hamza", audience: "gents", intensity: "hard", capacity: 20, spotsLeft: 13 },
+    { day: "fri", start: "15:30", end: "16:30", name: "Ladies Strength", type: "strength", coach: "Ayesha", audience: "ladies", intensity: "moderate", capacity: 14, spotsLeft: 6 },
+    { day: "fri", start: "19:00", end: "20:00", name: "Boxing", type: "boxing", coach: "Hamza", audience: "gents", intensity: "hard", capacity: 14, spotsLeft: 3 },
+    { day: "fri", start: "20:30", end: "21:30", name: "Strength", type: "strength", coach: "Bilal", audience: "gents", intensity: "hard", capacity: 16, spotsLeft: 9 },
     // Saturday
-    { day: "sat", start: "07:00", end: "08:00", name: "Strength", coach: "Bilal", audience: "gents" },
-    { day: "sat", start: "08:30", end: "09:15", name: "HIIT", coach: "Hamza", audience: "gents" },
-    { day: "sat", start: "13:30", end: "15:00", name: "Ladies Open Floor", coach: "Ayesha", audience: "ladies" },
-    { day: "sat", start: "15:30", end: "16:30", name: "Ladies Boxing", coach: "Ayesha", audience: "ladies" },
-    { day: "sat", start: "18:00", end: "19:00", name: "Boxing", coach: "Hamza", audience: "gents" },
-    { day: "sat", start: "19:30", end: "20:30", name: "Strength", coach: "Bilal", audience: "gents" },
-    // Sunday
-    { day: "sun", start: "08:30", end: "09:20", name: "Yoga & Mobility", coach: "Ayesha", audience: "all" },
-    { day: "sun", start: "10:00", end: "11:00", name: "Strength", coach: "Bilal", audience: "gents" },
-    { day: "sun", start: "17:30", end: "18:15", name: "HIIT", coach: "Hamza", audience: "gents" },
+    { day: "sat", start: "07:00", end: "08:00", name: "Strength", type: "strength", coach: "Bilal", audience: "gents", intensity: "hard", capacity: 16, spotsLeft: 10 },
+    { day: "sat", start: "08:30", end: "09:15", name: "HIIT", type: "hiit", coach: "Hamza", audience: "gents", intensity: "hard", capacity: 20, spotsLeft: 14 },
+    { day: "sat", start: "13:30", end: "15:00", name: "Ladies Open Floor", type: "open", coach: "Ayesha", audience: "ladies", intensity: "moderate", capacity: 25, spotsLeft: 16 },
+    { day: "sat", start: "15:30", end: "16:30", name: "Ladies Boxing", type: "boxing", coach: "Ayesha", audience: "ladies", intensity: "moderate", capacity: 12, spotsLeft: 2 },
+    { day: "sat", start: "18:00", end: "19:00", name: "Boxing", type: "boxing", coach: "Hamza", audience: "gents", intensity: "hard", capacity: 14, spotsLeft: 5 },
+    { day: "sat", start: "19:30", end: "20:30", name: "Strength", type: "strength", coach: "Bilal", audience: "gents", intensity: "hard", capacity: 16, spotsLeft: 11 },
+    // Sunday — short day, closes at 8 pm
+    { day: "sun", start: "08:30", end: "09:20", name: "Yoga & Mobility", type: "yoga", coach: "Ayesha", audience: "all", intensity: "easy", capacity: 18, spotsLeft: 12 },
+    { day: "sun", start: "10:00", end: "11:00", name: "Strength", type: "strength", coach: "Bilal", audience: "gents", intensity: "hard", capacity: 16, spotsLeft: 9 },
+    { day: "sun", start: "17:30", end: "18:15", name: "HIIT", type: "hiit", coach: "Hamza", audience: "gents", intensity: "hard", capacity: 20, spotsLeft: 15 },
   ] as ClassSlot[],
+
+  scheduleSection: {
+    heading: "This week on the floor",
+    subhead:
+      "Every class runs with a coach on the floor. Pick a day, filter to your hours, and message us to hold a spot.",
+    // {class}, {day} and {time} are filled in from the slot you tapped.
+    waBookTemplate:
+      "Assalam o alaikum! I'd like to book {class} on {day} at {time}. Is there a spot?",
+    waWaitlistTemplate:
+      "Assalam o alaikum! {class} on {day} at {time} shows as full — could you put me on the waitlist?",
+  },
 
   membership: {
     admissionFeePKR: 3000,
