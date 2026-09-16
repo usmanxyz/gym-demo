@@ -119,7 +119,18 @@ export type Trainer = {
   slug: string;
   name: string;
   role: string;
-  credentials: string[];
+  /** What they actually coach, in a sentence. */
+  specialty: string;
+  /** Years on the floor, written as a figure so it can wear the numeral face. */
+  experience: string;
+  certifications: string[];
+  /** Which batches they are on the floor for, in the gym's own words. */
+  batch: string;
+  /**
+   * The name as it is written against a class on the board, so the classes a
+   * coach runs are read off `schedule` rather than listed here a second time.
+   */
+  boardName: string;
   image: string;
   alt: string;
   waMessage: string;
@@ -776,16 +787,41 @@ export const site = {
     ] as Faq[],
   },
 
+  /**
+   * The copy around the three coaches: what the section says about them and
+   * the labels their facts hang on. The facts themselves are in `trainers`.
+   */
+  trainersSection: {
+    heading: "Who is on the floor when you are",
+    subhead:
+      "What each of them coaches, how long they have been doing it, and what they are qualified in. The classes under each coach are read straight off this week's timetable.",
+    specialtyLabel: "What they coach",
+    experienceLabel: "Experience",
+    certificationsLabel: "Certifications",
+    batchLabel: "On the floor",
+    boardLabel: "On the timetable",
+    /** Filled with the coach's first name by `fillTemplate`. */
+    askCta: "Ask for {name}",
+    /** How a coach's classes are counted under `boardLabel`. */
+    classCountLabel: "{count} classes a week",
+    singleClassLabel: "1 class a week",
+  },
+
   trainers: [
     {
       slug: "bilal-rana",
       name: "Bilal Rana",
       role: "Head strength coach",
-      credentials: [
+      specialty:
+        "The barbell lifts — squat, bench, deadlift, press. Technique before load, and he writes the first programme for every member who joins.",
+      experience: "9 years coaching in Lahore",
+      certifications: [
         "UKSCA-accredited strength and conditioning coach",
-        "Nine years coaching lifters in Lahore",
-        "Writes every member's first programme",
+        "NASM Certified Personal Trainer",
+        "Precision Nutrition Level 1",
       ],
+      batch: "Morning and late-evening gents' batches",
+      boardName: "Bilal",
       image: "/images/trainer-male-1.jpg",
       alt: "Bilal lifting a 10 kg hex dumbbell off the rack by the window.",
       waMessage:
@@ -795,11 +831,16 @@ export const site = {
       slug: "hamza-sheikh",
       name: "Hamza Sheikh",
       role: "Boxing and conditioning",
-      credentials: [
-        "Ten years amateur boxing, three of them working corners",
-        "Runs the pad work, bag rounds and the HIIT intervals",
-        "Beginners welcome — he provides the wraps",
+      specialty:
+        "Pad work, bag rounds and the HIIT intervals. Beginners are the point rather than the exception — he brings the wraps for a first session.",
+      experience: "10 years boxing, 3 of them working corners",
+      certifications: [
+        "Pakistan Boxing Federation Level 2 coach",
+        "ISSA Certified Conditioning Specialist",
+        "Emergency first aid and CPR, St John Pakistan",
       ],
+      batch: "Early mornings and evenings, gents' floor",
+      boardName: "Hamza",
       image: "/images/trainer-male-2.jpg",
       alt: "Hands taped in red boxing wraps, holding a gumshield.",
       waMessage:
@@ -809,11 +850,16 @@ export const site = {
       slug: "ayesha-tariq",
       name: "Ayesha Tariq",
       role: "Ladies' programme lead",
-      credentials: [
-        "Runs the full afternoon ladies' floor, every day it's open",
-        "Certified in pre- and post-natal training",
-        "Coaches and writes nutrition plans in Urdu and English",
+      specialty:
+        "Every class on the ladies' floor, from the strength sessions to the yoga. She coaches and writes nutrition plans in Urdu and English, and takes most of her members from having never trained at all.",
+      experience: "7 years coaching women's groups",
+      certifications: [
+        "ACE Certified Personal Trainer",
+        "Pre- and post-natal training, Girls Gone Strong",
+        "200-hour yoga teacher training",
       ],
+      batch: "The full afternoon ladies' floor, every day it is open",
+      boardName: "Ayesha",
       image: "/images/trainer-female-1.jpg",
       alt: "Ayesha kneeling beside a member, correcting her back position on the cable row.",
       waMessage:
