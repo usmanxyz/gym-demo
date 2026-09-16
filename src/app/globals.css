@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Night Floor — design tokens
+   Palette lifted from the photography: the hero's red LED strips, the sodium
+   light in the boxing gym, the warm wood above the lockers.
+
+   Two accents, each with exactly one job:
+     amber -> information (times, kg, PKR, the board, "open now")
+     wrap  -> action      (book free trial, WhatsApp)
+   Amber never appears on a button. Red never appears on a number.
+--------------------------------------------------------------------------- */
+
+@theme {
+  --color-ink: #12131a; /* page ground: deep charcoal with a blue cast */
+  --color-iron: #1e2029; /* raised surfaces, the board, form fields */
+  --color-iron-line: #2b2e3a; /* hairlines and borders on iron */
+  --color-bone: #e9e4da; /* primary text */
+  --color-smoke: #8a8b96; /* secondary text */
+  --color-amber: #f2a33c; /* information only */
+  --color-wrap: #d8342a; /* action only */
+  --color-wrap-hot: #ef4436; /* action, hover */
+
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-barlow), ui-sans-serif, system-ui, sans-serif;
+
+  /* Photos run full-bleed with hard edges; only UI chrome is softened. */
+  --radius-ui: 4px;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* the sticky navbar must not cover an anchored section heading */
+    scroll-padding-top: 5.5rem;
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-bone);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Keyboard focus is always visible, in the action colour. */
+  :focus-visible {
+    outline: 2px solid var(--color-wrap-hot);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-amber);
+    color: var(--color-ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Display type: Archivo pushed to its Expanded width axis (max 125).
+     Wide and blocky like a scoreboard, not the condensed fight-poster face
+     every other gym site reaches for. Caps are used on headlines only —
+     never on small labels. */
+  .display {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-variation-settings: "wdth" 118;
+    text-transform: uppercase;
+    letter-spacing: -0.015em;
+    line-height: 0.92;
+  }
+
+  .display-tight {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-variation-settings: "wdth" 112;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+  }
+
+  /* Numbers carry information, so they wear the information colour and the
+     wide face: hours, kg, PKR, locker counts. */
+  .numeral {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-variation-settings: "wdth" 110;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0;
+  }
+}
