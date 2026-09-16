@@ -42,7 +42,12 @@ export const metadata: Metadata = {
   // Without this, og:image stays relative and most unfurlers — WhatsApp
   // included — silently show no preview at all.
   metadataBase: new URL(siteUrl),
-  title: `${site.name} — ${site.tagline}, ${site.location.city}`,
+  // Each page supplies its own `title` and lands in the template; the
+  // homepage, which has nothing to add, uses the default as written.
+  title: {
+    default: `${site.name} — ${site.tagline}, ${site.location.city}`,
+    template: `%s — ${site.name}`,
+  },
   description: site.shortDescription,
   applicationName: site.name,
   alternates: { canonical: "/" },

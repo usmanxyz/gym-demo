@@ -1,6 +1,7 @@
 import { Phone } from "lucide-react";
 import { site } from "@/content/site";
 import { waLink } from "@/lib/wa";
+import { NavLink } from "./NavLink";
 import { Reveal } from "./Reveal";
 import { WhatsAppIcon } from "./WhatsAppIcon";
 
@@ -16,14 +17,19 @@ export function Footer() {
             <p className="mt-4 max-w-sm text-smoke">{site.shortDescription}</p>
           </div>
 
-          <nav aria-label="Sections">
+          <nav aria-label="Pages">
             <h2 className="text-sm font-semibold text-bone">Explore</h2>
             <ul className="mt-4 space-y-3">
               {site.nav.map((item) => (
                 <li key={item.href}>
-                  <a href={item.href} className="text-smoke transition-colors hover:text-bone">
+                  <NavLink
+                    href={item.href}
+                    className="transition-colors"
+                    activeClassName="font-medium text-bone"
+                    idleClassName="text-smoke hover:text-bone"
+                  >
                     {item.label}
-                  </a>
+                  </NavLink>
                 </li>
               ))}
             </ul>

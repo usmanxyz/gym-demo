@@ -16,6 +16,26 @@ export type Audience = "gents" | "ladies" | "all";
 
 export type NavItem = { label: string; href: string };
 
+/** The five pages behind the navbar. Each one is the route at /<key>. */
+export type PageKey = "programmes" | "schedule" | "plans" | "trainers" | "visit";
+
+/**
+ * Everything a page needs that is not its content: what the browser tab says,
+ * what a link preview says, the header it opens with, the label on the
+ * homepage preview that leads to it, and how the page names itself in a
+ * booking message.
+ */
+export type PageMeta = {
+  /** Fills %s in the root layout's title template. */
+  title: string;
+  description: string;
+  header: { heading: string; intro: string };
+  /** The label on the homepage preview's link through to this page. */
+  viewAll: string;
+  /** Fills {page} in bookingBand.waTemplate. */
+  from: string;
+};
+
 export type Program = {
   slug: string;
   name: string;
@@ -182,12 +202,94 @@ export const site = {
   },
 
   nav: [
-    { label: "Programmes", href: "#programmes" },
-    { label: "Schedule", href: "#schedule" },
-    { label: "Plans", href: "#plans" },
-    { label: "Trainers", href: "#trainers" },
-    { label: "Visit", href: "#visit" },
+    { label: "Programmes", href: "/programmes" },
+    { label: "Schedule", href: "/schedule" },
+    { label: "Plans", href: "/plans" },
+    { label: "Trainers", href: "/trainers" },
+    { label: "Visit", href: "/visit" },
   ] as NavItem[],
+
+  /**
+   * The five pages the navbar links to. Each goes deeper than its homepage
+   * preview, whose only job is to answer "is this for me?".
+   */
+  pages: {
+    programmes: {
+      title: "Programmes and classes",
+      description:
+        "Strength, HIIT, boxing, yoga and a ladies-only floor in DHA Phase 5, Lahore. What each programme involves, how hard it is, and which days it runs.",
+      header: {
+        heading: "Five ways to train",
+        intro:
+          "Every programme runs with a coach on the floor, and every one of them is open to a free first session. Here is what each actually involves before you turn up.",
+      },
+      viewAll: "View all five programmes",
+      from: "programmes page",
+    },
+    schedule: {
+      title: "Weekly schedule",
+      description:
+        "The full week of classes at Iron Fitness, with coaches, intensity and spots left, plus the gents' and ladies' gym-floor timings for every day.",
+      header: {
+        heading: "Every class, every day",
+        intro:
+          "The whole week in one place. Filter to your floor or your programme, then message us to hold a spot — classes are first come, first served once you have joined.",
+      },
+      viewAll: "View the full timetable",
+      from: "weekly schedule page",
+    },
+    plans: {
+      title: "Membership plans and fees",
+      description:
+        "Monthly, 3-month and 12-month memberships in PKR, the one-time admission fee, personal training and diet plans, the freeze and refund policy, and how to pay.",
+      header: {
+        heading: "What it costs to train here",
+        intro:
+          "Three memberships, one admission fee, and nothing after that. Everything we charge for is on this page, including the add-ons and what happens if you have to stop for a while.",
+      },
+      viewAll: "View all plans and fees",
+      from: "membership plans page",
+    },
+    trainers: {
+      title: "Trainers",
+      description:
+        "The three coaches at Iron Fitness: head strength coach Bilal Rana, boxing and conditioning coach Hamza Sheikh, and ladies' programme lead Ayesha Tariq.",
+      header: {
+        heading: "The coaches on the floor",
+        intro:
+          "Three coaches, and one of them is on the floor for every session we run. You can ask for any of them by name when you book your free trial.",
+      },
+      viewAll: "Meet all three coaches",
+      from: "trainers page",
+    },
+    visit: {
+      title: "Visit us in DHA Phase 5",
+      description:
+        "Where to find Iron Fitness in DHA Phase 5, Lahore: the address and landmark, gents' and ladies' hours, parking, and what to bring on your first visit.",
+      header: {
+        heading: "Come and find us",
+        intro:
+          "Everything you need to get here the first time: the address and the landmark to look for, both floors' hours, where to park, and the short list of things worth bringing.",
+      },
+      viewAll: "Plan your visit",
+      from: "visit page",
+    },
+  } as Record<PageKey, PageMeta>,
+
+  /**
+   * The band that closes every page. Its prefilled message names the page it
+   * was sent from, so an enquiry arrives saying what the visitor was reading —
+   * about the closest a site with no backend gets to knowing what worked.
+   */
+  bookingBand: {
+    heading: "Book your free trial",
+    body: "One full session, a scan and a look round. No card details, and nobody follows you round trying to sell you a year.",
+    cta: "Book on WhatsApp",
+    callCta: "Or call",
+    // {page} is filled from the `from` line of whichever page you are on.
+    waTemplate:
+      "Assalam o alaikum! I was reading the {page} on your website and I'd like to book my free trial session.",
+  },
 
   hero: {
     headline: "Your first session is free",

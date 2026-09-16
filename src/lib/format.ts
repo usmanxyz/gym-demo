@@ -26,3 +26,15 @@ export function toMinutes(time24: string): number {
   const [h, m] = time24.split(":").map(Number);
   return h * 60 + m;
 }
+
+/**
+ * Fills `{name}` placeholders in a message template from `site.ts`.
+ *
+ * Used by the schedule's booking and waitlist templates and by the booking
+ * band's page-aware message. An unknown placeholder is left as it was written
+ * rather than blanked, so a typo in the content file shows up in the message
+ * instead of quietly producing a sentence with a hole in it.
+ */
+export function fillTemplate(template: string, values: Record<string, string>): string {
+  return template.replace(/\{(\w+)\}/g, (_, key: string) => values[key] ?? `{${key}}`);
+}

@@ -14,7 +14,7 @@ import {
   type DayKey,
   type Hours,
 } from "@/content/site";
-import { formatDuration, formatTime, toMinutes } from "@/lib/format";
+import { fillTemplate, formatDuration, formatTime, toMinutes } from "@/lib/format";
 import { todayKey } from "@/lib/day";
 import { waLink } from "@/lib/wa";
 import { Reveal } from "./Reveal";
@@ -314,7 +314,7 @@ function ClassCard({ slot }: { slot: ClassSlot }) {
   const full = slot.spotsLeft === 0;
   const intensity = INTENSITY_LABELS[slot.intensity];
   const dayLabel = DAY_LABELS[slot.day].long;
-  const message = fill(
+  const message = fillTemplate(
     full ? site.scheduleSection.waWaitlistTemplate : site.scheduleSection.waBookTemplate,
     { class: slot.name, day: dayLabel, time: formatTime(slot.start) },
   );
@@ -414,8 +414,4 @@ function countLabel(count: number, day: DayKey): string {
   const long = DAY_LABELS[day].long;
   if (count === 0) return `No classes on ${long}`;
   return `${count} ${count === 1 ? "class" : "classes"} on ${long}`;
-}
-
-function fill(template: string, values: Record<string, string>): string {
-  return template.replace(/\{(\w+)\}/g, (_, key: string) => values[key] ?? `{${key}}`);
 }

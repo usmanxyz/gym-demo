@@ -1,3 +1,4 @@
+import { HashScroll } from "@/components/HashScroll";
 import { Hero } from "@/components/Hero";
 import { Schedule } from "@/components/Schedule";
 import { TrialForm } from "@/components/TrialForm";
@@ -10,6 +11,9 @@ import { TrialForm } from "@/components/TrialForm";
 export default function Home() {
   return (
     <>
+      {/* The navbar's booking button arrives here from the other five pages. */}
+      <HashScroll />
+
       <Hero />
 
       <Schedule />
