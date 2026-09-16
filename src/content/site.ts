@@ -36,6 +36,12 @@ export type PageMeta = {
   from: string;
 };
 
+/** How hard a class is, for the three-bar meter on the cards. */
+export type Intensity = "easy" | "moderate" | "hard";
+
+/** Groups a class with the programme it belongs to, so the board can filter. */
+export type ClassType = "strength" | "hiit" | "boxing" | "yoga" | "open";
+
 export type Program = {
   slug: string;
   name: string;
@@ -44,13 +50,20 @@ export type Program = {
   audience: Audience;
   image: string;
   alt: string;
+  /** Who turns up to this one, in a sentence — the depth on /programmes. */
+  forWho: string;
+  intensity: Intensity;
+  /** A session start to finish. A sequence, so it renders as an ordered list. */
+  session: string[];
+  /**
+   * How this programme maps onto the timetable, so `daysForProgramme()` can
+   * read the days it runs out of `schedule` instead of them being typed
+   * twice and drifting. Most programmes are a class type; the ladies' floor
+   * is an audience, because it is every class type during those hours.
+   */
+  classType?: ClassType;
+  classAudience?: Audience;
 };
-
-/** How hard a class is, for the three-bar meter on the schedule cards. */
-export type Intensity = "easy" | "moderate" | "hard";
-
-/** Groups a class with the programme it belongs to, so the board can filter. */
-export type ClassType = "strength" | "hiit" | "boxing" | "yoga" | "open";
 
 export type ClassSlot = {
   day: DayKey;
@@ -356,6 +369,16 @@ export const site = {
       audience: "all",
       image: "/images/program-strength.jpg",
       alt: "A lifter setting up over a loaded barbell on the rubber floor.",
+      forWho:
+        "Anyone who wants to get properly strong, from someone who has never held a barbell to a lifter chasing a number. Beginners spend their first month on technique with light bars, in the same class as everyone else.",
+      intensity: "hard",
+      session: [
+        "Ten minutes of warm-up sets and the one technique cue your coach wants from you today.",
+        "The main lift — squat, bench, press or deadlift — worked up in the sets written on your card.",
+        "Two or three accessory lifts that hold the main one up: rows, chin-ups, hinges, carries.",
+        "Loaded stretching, then your numbers go on the card before you leave.",
+      ],
+      classType: "strength",
     },
     {
       slug: "hiit",
@@ -366,6 +389,16 @@ export const site = {
       audience: "all",
       image: "/images/program-hiit.jpg",
       alt: "Kettlebells and a medicine ball set out on the turf lane before a class.",
+      forWho:
+        "People with forty-five minutes and a heart rate to raise. Every station scales on the spot, so someone in their first week and someone who runs half marathons do the same class at different weights.",
+      intensity: "hard",
+      session: [
+        "A joint-by-joint warm-up while the coach walks the room through every station.",
+        "Three or four rounds of kettlebell, sled, rower and bodyweight work, on the clock.",
+        "A short finisher — usually the part everybody complains about afterwards.",
+        "Cool-down and breathing on the turf.",
+      ],
+      classType: "hiit",
     },
     {
       slug: "boxing",
@@ -376,6 +409,16 @@ export const site = {
       audience: "all",
       image: "/images/program-boxing.jpg",
       alt: "A boxer working the heavy bag under the gym's warm overhead lamps.",
+      forWho:
+        "Anyone who wants to learn to actually box rather than throw punches at the air for cardio. Sparring is optional, arranged in advance, and never something that happens to you by surprise.",
+      intensity: "hard",
+      session: [
+        "Skipping and shadow work while Hamza wraps hands for anyone new.",
+        "Pad work in pairs — one or two things per session, drilled until they hold under fatigue.",
+        "Rounds on the heavy bag, three minutes on, one off.",
+        "Core, conditioning and a stretch to finish.",
+      ],
+      classType: "boxing",
     },
     {
       slug: "yoga",
@@ -386,6 +429,16 @@ export const site = {
       audience: "all",
       image: "/images/program-yoga.jpg",
       alt: "The upstairs mobility studio, mats and blocks laid out along a mirrored wall.",
+      forWho:
+        "Desk backs, tight hips, and lifters who cannot sit in the bottom of a squat. No previous yoga and no flexibility required — that is what you are here to fix.",
+      intensity: "easy",
+      session: [
+        "Ten minutes of breathing and spinal work to settle the room down.",
+        "A slow flow through hips, shoulders and upper back — the three places a desk takes first.",
+        "Long holds with blocks and straps, held properly rather than rushed through.",
+        "Eight minutes flat on your back with the lights down.",
+      ],
+      classType: "yoga",
     },
     {
       slug: "ladies",
@@ -396,8 +449,38 @@ export const site = {
       audience: "ladies",
       image: "/images/program-ladies.jpg",
       alt: "Two women sitting back to back on a plyo box during the afternoon ladies' session.",
+      forWho:
+        "Women who want a real weight room rather than a side room with three treadmills. Complete beginners included — most of the afternoon floor started that way.",
+      intensity: "moderate",
+      session: [
+        "The floor closes to men for the whole block and is staffed by female coaches throughout.",
+        "Coached classes run through the afternoon: strength, HIIT, boxing and yoga on their own timetable.",
+        "Between classes the entire floor is yours — the same racks, machines and cardio as any other hour.",
+        "An InBody scan and a written programme from Ayesha whenever you want one.",
+      ],
+      classAudience: "ladies",
     },
   ] as Program[],
+
+  /**
+   * The copy around the five programmes. The programmes themselves are in
+   * `programmes` above — this is only what the page says about them, and the
+   * labels the cards hang their facts on.
+   */
+  programmesSection: {
+    heading: "Five ways to train, one floor",
+    subhead:
+      "Strength, intervals, boxing, mobility, and a floor that turns women-only every afternoon. Every one of them is coached, and every one of them takes beginners.",
+    forWhoHeading: "Who it's for",
+    sessionHeading: "What a session looks like",
+    durationLabel: "Session length",
+    intensityLabel: "Intensity",
+    daysLabel: "Runs on",
+    everyDayLabel: "Every day",
+    /** When a programme has no classes of its own on the board. */
+    noDaysLabel: "Whenever the floor is open",
+    ladiesLabel: "Ladies only",
+  },
 
   // Capacity and spots left are a snapshot: a real gym would read these
   // from its booking system. They exist so the cards can show how full a

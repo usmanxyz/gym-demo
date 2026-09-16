@@ -7,7 +7,6 @@ import {
   CLASS_TYPES,
   DAY_LABELS,
   DAY_ORDER,
-  INTENSITY_LABELS,
   site,
   type Audience,
   type ClassSlot,
@@ -23,6 +22,7 @@ import {
 } from "@/lib/format";
 import { todayKey } from "@/lib/day";
 import { waLink } from "@/lib/wa";
+import { IntensityMeter } from "./IntensityMeter";
 import { Reveal } from "./Reveal";
 import { WhatsAppIcon } from "./WhatsAppIcon";
 
@@ -339,7 +339,6 @@ function ChipRow<T extends string>({
  */
 function ClassCard({ slot }: { slot: ClassSlot }) {
   const full = slot.spotsLeft === 0;
-  const intensity = INTENSITY_LABELS[slot.intensity];
   const dayLabel = DAY_LABELS[slot.day].long;
   const message = fillTemplate(
     full ? site.scheduleSection.waWaitlistTemplate : site.scheduleSection.waBookTemplate,
@@ -397,20 +396,7 @@ function ClassCard({ slot }: { slot: ClassSlot }) {
             {slot.audience === "ladies" ? "Ladies only" : AUDIENCE_LABELS[slot.audience]}
           </span>
 
-          <span className="flex items-center gap-2 text-smoke">
-            <span aria-hidden className="flex items-end gap-0.5">
-              {[1, 2, 3].map((bar) => (
-                <span
-                  key={bar}
-                  className={`w-1 rounded-sm ${
-                    bar <= intensity.level ? "bg-amber" : "bg-iron-line"
-                  }`}
-                  style={{ height: `${bar * 4 + 2}px` }}
-                />
-              ))}
-            </span>
-            {intensity.label}
-          </span>
+          <IntensityMeter intensity={slot.intensity} />
 
           {full ? (
             <span className="font-medium text-smoke">Full — join the waitlist</span>
