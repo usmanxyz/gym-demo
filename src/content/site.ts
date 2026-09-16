@@ -154,9 +154,23 @@ export const site = {
   hero: {
     headline: "Your first session is free",
     subhead:
-      "Coached strength, boxing and conditioning in DHA Phase 5 — open from 5 am to 11 pm, and women only every afternoon.",
-    primaryCta: "Book free session",
+      "Coached strength, boxing and conditioning in DHA Phase 5, Lahore — women only every afternoon.",
+    primaryCta: "Claim your free trial",
+    // The navbar and the mobile bar carry the same action in less space.
+    primaryCtaShort: "Book free trial",
     secondaryCta: "Ask on WhatsApp",
+    // Three figures, in the information colour: the numbers a visitor uses to
+    // decide this place is real before they read anything else.
+    stats: [
+      { value: "600+", label: "members" },
+      { value: "8", label: "certified trainers" },
+      { value: "10", label: "years open" },
+    ],
+  },
+
+  heroImage: {
+    src: "/images/hero-gym-floor.jpg",
+    alt: "The Iron Fitness main floor at night, racks and benches under the red LED strips.",
   },
 
   programmes: [

@@ -74,7 +74,7 @@ export function Navbar() {
             href="#book"
             className="hidden rounded-ui bg-wrap px-5 py-3 text-[0.95rem] font-semibold text-bone transition-colors hover:bg-wrap-hot sm:inline-block"
           >
-            {site.hero.primaryCta}
+            {site.hero.primaryCtaShort}
           </a>
 
           <button
@@ -117,7 +117,7 @@ export function Navbar() {
               onClick={() => setOpen(false)}
               className="rounded-ui bg-wrap px-5 py-4 text-center text-base font-semibold text-bone transition-colors hover:bg-wrap-hot"
             >
-              {site.hero.primaryCta}
+              {site.hero.primaryCtaShort}
             </a>
             <a
               href={`tel:${site.contact.phone}`}
