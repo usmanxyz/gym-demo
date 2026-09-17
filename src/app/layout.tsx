@@ -84,7 +84,13 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${archivo.variable} ${barlow.variable} h-full`}>
+    <html
+      lang="en"
+      className={`${archivo.variable} ${barlow.variable} h-full`}
+      // The inline script below adds data-js to this element before React
+      // hydrates, so the client tree never matches the server HTML here.
+      suppressHydrationWarning
+    >
       <body className="flex min-h-full flex-col">
         {/* Marks the document as scripted before anything is painted, which is
             what lets the scroll-in animations start hidden without a flash and

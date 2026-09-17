@@ -963,8 +963,8 @@ export const site = {
       ],
       batch: "Early mornings and evenings, gents' floor",
       boardName: "Hamza",
-      image: "/images/trainer-male-2.jpg",
-      alt: "Hands taped in red boxing wraps, holding a gumshield.",
+      image: "/images/trainer-male-2-boxing.jpg",
+      alt: "A boxer in a black vest pressing his red boxing gloves together.",
       waMessage:
         "Assalam o alaikum! I'd like to try the boxing class with Hamza. What's the next free session?",
     },
