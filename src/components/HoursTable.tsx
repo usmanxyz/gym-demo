@@ -42,15 +42,7 @@ export function HoursTable() {
         </Reveal>
 
         <Reveal delay={90}>
-          <div className="mt-8 grid gap-4 md:mt-10 md:grid-cols-2">
-            {FLOORS.map((floor) => (
-              <FloorTable
-                key={floor.key}
-                label={AUDIENCE_LABELS[floor.key]}
-                hours={floor.hours}
-              />
-            ))}
-          </div>
+          <FloorTables className="mt-8 grid gap-4 md:mt-10 md:grid-cols-2" />
 
           <div className="mt-8 grid gap-4 md:grid-cols-2">
             <div className="rounded-ui border border-iron-line p-5 md:p-6">
@@ -86,6 +78,28 @@ export function HoursTable() {
         </Reveal>
       </div>
     </section>
+  );
+}
+
+/**
+ * Both floors' weeks and nothing else — no heading, no notes.
+ *
+ * Exported because the homepage renders the two tables inside its location
+ * section, where the section already has a heading of its own and the notes
+ * are set as plain lines rather than a box. The caller supplies the layout:
+ * two columns under the full section, one column beside the address.
+ */
+export function FloorTables({ className }: { className?: string }) {
+  return (
+    <div className={className}>
+      {FLOORS.map((floor) => (
+        <FloorTable
+          key={floor.key}
+          label={AUDIENCE_LABELS[floor.key]}
+          hours={floor.hours}
+        />
+      ))}
+    </div>
   );
 }
 

@@ -636,6 +636,20 @@ export const site = {
       /** The one message sent from this page that isn't the booking band's. */
       waMessage:
         "Assalam o alaikum! I'm heading over to Iron Fitness — could you send me the location?",
+
+      /**
+       * The same block at homepage depth. It gets its own heading because it
+       * is answering a different question there: not "how do I get in?" —
+       * that visitor has already decided to come — but "is this near me, and
+       * is it open when I can train?". Which is also why the homepage puts
+       * the timings where /visit puts the area map.
+       */
+      preview: {
+        heading: "Where we are, and when we're open",
+        subhead:
+          "One floor on Main Boulevard in DHA Phase 5, open from five in the morning, with the afternoons given over to the ladies' floor.",
+        hoursHeading: "Gym floor hours",
+      },
     },
 
     directions: {
