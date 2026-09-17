@@ -3,6 +3,7 @@ import { Hero } from "@/components/Hero";
 import { Plans } from "@/components/Plans";
 import { Programmes } from "@/components/Programmes";
 import { Schedule } from "@/components/Schedule";
+import { Testimonials } from "@/components/Testimonials";
 import { Trainers } from "@/components/Trainers";
 import { TrialForm } from "@/components/TrialForm";
 import { VisitAddress } from "@/components/VisitAddress";
@@ -20,9 +21,9 @@ import { VisitAddress } from "@/components/VisitAddress";
  * reading the address has already decided — it answers "where do I go?", not
  * "should I?".
  *
- * Still to come, in §2 order: testimonials and gallery between the trainers
- * and the form, the FAQ between the form and the location, and the sticky
- * mobile CTA bar. None of them has a page counterpart.
+ * Still to come, in §2 order: the gallery between the testimonials and the
+ * form, the FAQ between the form and the location, and the sticky mobile CTA
+ * bar. None of them has a page counterpart.
  */
 export default function Home() {
   return (
@@ -39,6 +40,8 @@ export default function Home() {
       <Plans variant="preview" />
 
       <Trainers variant="preview" />
+
+      <Testimonials />
 
       <TrialForm />
 

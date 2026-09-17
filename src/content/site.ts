@@ -989,6 +989,16 @@ export const site = {
     },
   ] as Trainer[],
 
+  reviewsSection: {
+    heading: "What members actually say",
+    subhead:
+      "Four members, four different reasons for joining. Each is named by first name and the part of Lahore they travel in from.",
+    /** Sits under the quotes. The footer carries the same admission once more,
+        for the whole page; this one is here because a testimonial is the single
+        easiest thing on a demo to mistake for real. */
+    note: "These quotes are written for the demo, not collected from members.",
+  },
+
   reviews: [
     {
       quote:
