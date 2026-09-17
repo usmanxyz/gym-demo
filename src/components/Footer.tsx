@@ -8,8 +8,9 @@ import { WhatsAppIcon } from "./WhatsAppIcon";
 export function Footer() {
   return (
     <footer className="border-t border-iron-line bg-iron">
-      {/* Extra bottom padding buys clearance for the fixed WhatsApp bubble,
-          which otherwise parks on top of the last line of the disclaimer. */}
+      {/* Extra bottom padding buys clearance for whichever pinned control is
+          on screen — the CTA bar on a phone, the WhatsApp bubble above `md`.
+          Without it either one parks on the last line of the disclaimer. */}
       <div className="mx-auto max-w-7xl px-5 pb-28 pt-14 md:px-8 md:pb-24 md:pt-20">
         <Reveal className="grid gap-12 md:grid-cols-[1.4fr_1fr_1.2fr]">
           <div>

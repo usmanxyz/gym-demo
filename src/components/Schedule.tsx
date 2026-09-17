@@ -333,9 +333,9 @@ function ChipRow<T extends string>({
  * who it's for, how hard it is, and whether there's room.
  *
  * The whole card is the link, not a small button inside it. On a phone that
- * means a target you can hit without aiming — and it keeps the floating
- * WhatsApp bubble, which is pinned to the same bottom-right corner a button
- * would sit in, from ever covering the way to book.
+ * means a target you can hit without aiming — and it keeps the pinned controls,
+ * which sit along the bottom edge where a small button would, from ever
+ * covering the way to book.
  */
 function ClassCard({ slot }: { slot: ClassSlot }) {
   const full = slot.spotsLeft === 0;

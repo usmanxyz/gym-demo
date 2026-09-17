@@ -3,6 +3,7 @@ import { Archivo, Barlow } from "next/font/google";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { StructuredData } from "@/components/StructuredData";
+import { MobileCtaBar } from "@/components/MobileCtaBar";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { site } from "@/content/site";
 import { siteUrl } from "@/lib/site-url";
@@ -112,6 +113,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </main>
         <Footer />
+        <MobileCtaBar />
         <WhatsAppButton />
         <StructuredData />
       </body>

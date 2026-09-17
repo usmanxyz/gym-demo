@@ -308,8 +308,9 @@ export function TrialForm() {
                 </Field>
 
                 <div>
-                  {/* Full width, so the floating WhatsApp bubble in the corner
-                      can never sit on top of the way to book. */}
+                  {/* Full width, so nothing pinned to a corner can sit on top
+                      of the way to book. The mobile CTA bar drops itself while
+                      this section is on screen for the same reason. */}
                   <button
                     type="submit"
                     className="on-action flex min-h-14 w-full items-center justify-center gap-2.5 rounded-ui bg-wrap px-6 text-base font-semibold text-white transition-colors hover:bg-wrap-deep"

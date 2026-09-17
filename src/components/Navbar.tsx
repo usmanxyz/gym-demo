@@ -46,9 +46,15 @@ export function Navbar() {
     document.addEventListener("keydown", onKey);
     const { overflow } = document.body.style;
     document.body.style.overflow = "hidden";
+    // The sheet sits in normal flow inside the fixed header, so it covers the
+    // top of the screen but not the bottom — the mobile CTA bar would show
+    // through beneath it. Flagging the state on <html> lets the bar drop itself
+    // in CSS, without either component knowing the other exists.
+    document.documentElement.dataset.sheetOpen = "";
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = overflow;
+      delete document.documentElement.dataset.sheetOpen;
     };
   }, [open]);
 
